@@ -1,0 +1,25 @@
+format = '''
+ ▲ 👟 $all$character
+'''
+
+[character]
+format = ' '
+
+[nodejs]
+disabled = true
+
+[golang]
+disabled = true
+
+[rust]
+disabled = true
+
+[docker_context]
+disabled = true
+
+[git_branch]
+symbol = ''
+style = 'red'
+
+[git_status]
+disabled = true
