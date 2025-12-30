@@ -11,7 +11,22 @@ return {
     {
       "<leader>gd",
       function()
-        Snacks.terminal("critique main..HEAD", {
+        Snacks.terminal("critique", {
+          win = {
+            position = "float",
+            width = 0,
+            height = 0,
+            border = "none",
+            backdrop = false,
+          },
+        })
+      end,
+      desc = "Critique unstaged changes",
+    },
+    {
+      "<leader>gD",
+      function()
+        Snacks.terminal("critique main HEAD", {
           win = {
             position = "float",
             width = 0,
