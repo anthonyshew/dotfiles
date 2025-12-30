@@ -1,0 +1,24 @@
+[user]
+	email = anthonyshew@gmail.com
+	name = Anthony Shew
+[core]
+	editor = nvim
+[init]
+	defaultBranch = main
+[color]
+	ui = true
+[pull]
+	rebase = false
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[push]
+	default = current
+[http]
+	postBuffer = 157286400
+[diff]
+	tool = critique
+[difftool "critique"]
+	cmd = critique difftool \"$LOCAL\" \"$REMOTE\"

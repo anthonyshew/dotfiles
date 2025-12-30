@@ -1,0 +1,23 @@
+title="Ghostty"
+background="#000000"
+font-family="Geist Mono Variable"
+window-padding-x="10"
+window-padding-balance="true"
+window-padding-color="extend"
+window-padding-y="2"
+cursor-style = block
+cursor-style-blink = false
+shell-integration-features = no-cursor
+clipboard-trim-trailing-spaces="true"
+clipboard-paste-protection="true"
+macos-titlebar-style="tabs"
+macos-titlebar-proxy-icon="hidden"
+macos-window-shadow="false"
+font-size="15"
+font-thicken
+font-thicken-strength="50"
+font-feature="-calt"
+font-feature="-liga"
+font-feature="-dlig"
+mouse-hide-while-typing="true"
+quit-after-last-window-closed=true

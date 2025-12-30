@@ -1,0 +1,14 @@
+gui:
+  windowSize: 'full'
+  nerdFontsVersion: ""
+  showFileTree: true
+  showListFooter: true
+  showRandomTip: true
+  showBottomLine: true
+  showCommandLog: true
+  showIcons: false
+  commandLogSize: 8
+  splitDiff: 'auto'
+  skipDiscardChangeWarning: false
+  skipStashWarning: false
+  showFileIcons: true

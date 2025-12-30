@@ -1,0 +1,130 @@
+// Zed keymap
+//
+// For information on binding keys, see the Zed
+// documentation: https://zed.dev/docs/key-bindings
+//
+// To see the default key bindings run `zed: open default keymap`
+// from the command palette.
+[
+  {
+    "context": "Workspace",
+    "bindings": {
+      "ctrl-a f": "workspace::ToggleZoom"
+    }
+  },
+  {
+    "context": "Workspace && not_editing",
+    "bindings": {
+      "ctrl-a f": "workspace::ToggleZoom",
+      "space space": "file_finder::Toggle"
+    }
+  },
+  {
+    "context": "Editor",
+    "bindings": {
+      "space ;": "workspace::ToggleRightDock"
+    }
+  },
+  {
+    "context": "VimControl && !menu",
+    "bindings": {
+      // "shift-l": "pane::ActivateNextItem",
+      // "shift-h": "pane::ActivatePrevItem"
+    }
+  },
+  {
+    "context": "Editor",
+    "bindings": {
+      "ctrl-s": "workspace::Save"
+    }
+  },
+  {
+    "context": "Pane",
+    "bindings": {
+      "space b d": "pane::CloseActiveItem"
+      // "shift-l": "pane::ActivateNextItem",
+      // "shift-h": "pane::ActivatePrevItem"
+    }
+  },
+
+  {
+    "context": "Editor && vim_mode == normal && vim_operator == none && !VimWaiting",
+    "bindings": {
+      "] h": "editor::GoToHunk",
+      "[ h": "editor::GoToPrevHunk",
+      "ctrl-a v": "workspace::NewTerminal",
+      "shift-l": "pane::ActivateNextItem",
+      "shift-h": "pane::ActivatePrevItem",
+      "space ,": "tab_switcher::Toggle",
+      "space space": "file_finder::Toggle",
+      "space a a": "assistant::InlineAssist",
+      "space b b": ["workspace::SendKeystrokes", "ctrl-tab enter"],
+      "space b d": "pane::CloseActiveItem",
+      "space c a": "editor::ToggleCodeActions",
+      "space b o": "pane::CloseInactiveItems",
+      "space g b": "editor::ToggleGitBlame",
+      "space u w": "editor::ToggleSoftWrap",
+      "space e": "project_panel::ToggleFocus",
+      // "space o": "outline_panel::ToggleFocus",
+      "space x": "diagnostics::Deploy",
+      "space f": "workspace::ToggleRightDock",
+      "space g g": [
+        "workspace::SendKeystrokes",
+        ": new center terminal enter lazygit space && space exit enter"
+      ],
+      "space s": "pane::DeploySearch",
+      "space g o": "editor::ToggleHunkDiff"
+    }
+  },
+  {
+    "context": "Editor && vim_mode == visual && vim_operator == none && !VimWaiting",
+    "bindings": {
+      "space a a": "assistant::InlineAssist"
+    }
+  },
+  {
+    "context": "Editor && vim_mode == insert && vim_operator == none && !VimWaiting",
+    "bindings": {
+      "ctrl-h": "editor::AcceptInlineCompletion"
+    }
+  },
+  {
+    "context": "Editor && showing_completions",
+    "bindings": {
+      "ctrl-y": "editor::ConfirmCompletion"
+    }
+  },
+  {
+    "context": "Dock",
+    "bindings": {
+      "ctrl-w h": ["workspace::ActivatePaneInDirection", "Left"],
+      "ctrl-w l": ["workspace::ActivatePaneInDirection", "Right"],
+      "ctrl-w k": ["workspace::ActivatePaneInDirection", "Up"],
+      "ctrl-w j": ["workspace::ActivatePaneInDirection", "Down"]
+    }
+  },
+  {
+    "context": "Dock || Editor",
+    "bindings": {
+      "cmd-a v": "terminal_panel::ToggleFocus"
+    }
+  },
+  {
+    "context": "ProjectPanel && not_editing",
+    "bindings": {
+      "a": "project_panel::NewFile",
+      "d": "project_panel::Delete",
+      "y": "project_panel::Copy",
+      "p": "project_panel::Paste",
+      "r": "project_panel::Rename",
+      "z": "project_panel::CollapseAllEntries",
+      "space e": "workspace::ToggleLeftDock"
+    }
+  },
+  {
+    "context": "Editor && VimControl && !VimWaiting && !menu",
+    "bindings": {
+      "space t": "workspace::NewCenterTerminal"
+    }
+  }
+]
