@@ -9,7 +9,7 @@ export MANPATH="/opt/homebrew/share/man:${MANPATH:-}"
 export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}"
 
 # pnpm
-export PNPM_HOME="/Users/anthonyshew/Library/pnpm"
+export PNPM_HOME="$HOME/Library/pnpm"
 
 # Bun
 export BUN_INSTALL="$HOME/.bun"
@@ -100,7 +100,7 @@ alias killport='kill_port() { lsof -i tcp:$1 | awk "NR!=1 {print \$2}" | xargs k
 alias shew="~/projects/open/my-repo/apps/cli-app/target/release/shew-cli"
 
 # AI AF
-alias claude="/Users/anthonyshew/.claude/local/claude"
+alias claude="$HOME/.claude/local/claude"
 
 # Performance stuff below this line
 
@@ -115,9 +115,9 @@ fi
 
 # bun completions - lazy load to speed up shell startup
 # Completions are loaded on first <tab> after typing 'bun'
-if [[ -s "/Users/anthonyshew/.bun/_bun" ]]; then
+if [[ -s "$HOME/.bun/_bun" ]]; then
   __load_bun_completions() {
-    source "/Users/anthonyshew/.bun/_bun"
+    source "$HOME/.bun/_bun"
     unfunction __load_bun_completions
   }
   compdef __load_bun_completions bun
