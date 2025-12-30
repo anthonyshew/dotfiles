@@ -1,5 +1,4 @@
 gui:
-  windowSize: 'full'
   nerdFontsVersion: ""
   showFileTree: true
   showListFooter: true

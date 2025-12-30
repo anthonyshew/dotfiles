@@ -1,5 +1,5 @@
 # No ZSH shell sessions thing, yuck.
-SHELL_SESSIONS_DISABLE=1
+export SHELL_SESSIONS_DISABLE=1
 
 # Homebrew
 export HOMEBREW_PREFIX="/opt/homebrew"
@@ -14,12 +14,20 @@ export PNPM_HOME="/Users/anthonyshew/Library/pnpm"
 # Bun
 export BUN_INSTALL="$HOME/.bun"
 
+# OrbStack
+source ~/.orbstack/shell/init.zsh 2>/dev/null || :
+
+# Default editor
+export EDITOR="nvim"
+
 # Consolidated PATH (single assignment is faster than multiple appends)
 export PATH="\
 $HOME/.local/bin:\
 $HOME/.opencode/bin:\
 $BUN_INSTALL/bin:\
 $PNPM_HOME:\
+/usr/local/go/bin:\
+$HOME/go/bin:\
 /opt/homebrew/opt/go@1.20/bin:\
 $HOME/bin:\
 /opt/homebrew/bin:\
@@ -68,47 +76,6 @@ alias newbranch="source ~/.zshrc; git checkout -b shew/$(head -c 16 /dev/urandom
 # Changed from alias to function - alias with $() runs git at shell startup!
 cdgr() { cd "$(git rev-parse --show-toplevel)"; }
 
-# Git worktrees (usage: wt add [name], wt rm <branch>, wt list, wt rm --force <branch>)
-wt() {
-  case "$1" in
-    add)
-      local suffix="${2:-$(head -c 16 /dev/urandom | md5 | cut -c 1-5)}"
-      local name="shew/$suffix"
-      local worktree_path="../$(basename $(pwd))-worktree-$suffix"
-      git worktree add "$worktree_path" -b "$name"
-      echo "Created worktree on branch: $name"
-      cd "$worktree_path"
-      ;;
-    rm)
-      if [[ "$2" == "--force" || "$2" == "-f" ]]; then
-        local branch="$3"
-        local short="${branch##*/}"
-        local main_repo="../$(basename $(pwd) | sed 's/-worktree-.*//')"
-        cd "$main_repo"
-        git worktree remove --force "$(pwd)-worktree-$short"
-        git branch -D "$branch"
-      else
-        local branch="$2"
-        local short="${branch##*/}"
-        local main_repo="../$(basename $(pwd) | sed 's/-worktree-.*//')"
-        cd "$main_repo"
-        git worktree remove "$(pwd)-worktree-$short" && git branch -d "$branch"
-      fi
-      ;;
-    list|ls)
-      git worktree list
-      ;;
-    *)
-      echo "Usage: wt <command>"
-      echo "Commands:"
-      echo "  add [name]       Create worktree (random name if omitted)"
-      echo "  rm <branch>      Remove worktree and delete branch"
-      echo "  rm -f <branch>   Force remove worktree and branch"
-      echo "  list, ls         List all worktrees"
-      ;;
-  esac
-}
-
 # Projects
 alias projo="cd ~/projects/open"
 alias projc="cd ~/projects/closed"
@@ -135,15 +102,7 @@ alias shew="~/projects/open/my-repo/apps/cli-app/target/release/shew-cli"
 # AI AF
 alias claude="/Users/anthonyshew/.claude/local/claude"
 
-# # Rename Ghostty tabs to git root or PWD
-# precmd() {
-#     local git_root=$(git rev-parse --show-toplevel --show-superproject-working-tree 2>/dev/null)
-#     if [ -n "$git_root" ]; then
-#         printf "\e]9;9;%s\a" "$(basename "$git_root")"
-#     else
-#         printf "\e]9;9;%s\a" "$(basename "$PWD")"
-#     fi
-# }
+# Performance stuff below this line
 
 # Initialize completion system (required for compdef)
 autoload -Uz compinit

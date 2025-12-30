@@ -3,7 +3,7 @@ set -euo pipefail
 
 REPO_DIR="${REPO_DIR:-$(pwd)}"
 TARGET_DIR="${TARGET_DIR:-$HOME}"
-PACKAGES=(zsh bash starship git ghostty nvim zed tmux lazygit bat)
+PACKAGES=(zsh starship git ghostty nvim zed tmux lazygit bat gh gh-dash opencode)
 
 require_cmd() {
   if ! command -v "$1" >/dev/null 2>&1; then
