@@ -3,6 +3,7 @@
 	name = Anthony Shew
 [core]
 	editor = nvim
+	excludesfile = ~/.gitignore_global
 [init]
 	defaultBranch = main
 [color]
