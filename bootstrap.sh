@@ -12,9 +12,20 @@ require_cmd() {
   fi
 }
 
+install_npm_globals() {
+  if command -v npm >/dev/null 2>&1; then
+    echo "Installing global npm packages..."
+    npm install -g @anthropic/critique 2>/dev/null || echo "Failed to install critique (may need sudo)"
+  else
+    echo "npm not found, skipping global package installation"
+  fi
+}
+
 main() {
   cd "$REPO_DIR"
   require_cmd stow
+
+  install_npm_globals
 
   echo "Linking packages to $TARGET_DIR"
   for pkg in "${PACKAGES[@]}"; do
