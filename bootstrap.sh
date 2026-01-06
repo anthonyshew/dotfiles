@@ -15,9 +15,9 @@ require_cmd() {
 install_npm_globals() {
   if command -v npm >/dev/null 2>&1; then
     echo "Installing global npm packages..."
-    npm install -g @anthropic/critique 2>/dev/null || echo "Failed to install critique (may need sudo)"
+    bun install -g critique 2>/dev/null
   else
-    echo "npm not found, skipping global package installation"
+    echo "bun not found, skipping global package installation"
   fi
 }
 
