@@ -229,16 +229,31 @@ return {
             GitSignsAdd = { fg = colors.diff_add },
             GitSignsChange = { fg = colors.blue },
             GitSignsDelete = { fg = colors.diff_delete },
-            DiffAdd = { bg = "#0d2818" },
-            DiffChange = { bg = "#1a1a1a" },
-            DiffDelete = { bg = "#2d1215" },
-            DiffText = { bg = "#1f3e70" },
+            DiffAdd = { bg = "#0d380d" },
+            DiffChange = { bg = "#38380d" },
+            DiffDelete = { bg = "#380d0d" },
+            DiffText = { bg = "#4a4a1f" },
+
+            -- mini.diff
+            MiniDiffSignAdd = { fg = "#66c266" },
+            MiniDiffSignChange = { fg = "#c2c266" },
+            MiniDiffSignDelete = { fg = "#c26666" },
+            MiniDiffOverAdd = { bg = "#0d380d" },
+            MiniDiffOverChange = { bg = "#38380d" },
+            MiniDiffOverDelete = { bg = "#380d0d" },
+            MiniDiffOverContext = { bg = "#38380d" },
 
             -- Diagnostics
             DiagnosticError = { fg = colors.red },
             DiagnosticWarn = { fg = colors.pink },
             DiagnosticInfo = { fg = colors.blue },
             DiagnosticHint = { fg = colors.purple },
+
+            -- WhichKey
+            WhichKey = { fg = colors.fg },
+            WhichKeyDesc = { fg = colors.fg },
+            WhichKeyGroup = { fg = colors.light_blue },
+            WhichKeyValue = { fg = colors.gray },
           },
         },
       })
