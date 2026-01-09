@@ -14,5 +14,10 @@ return {
         },
       },
     },
+    highlights = {
+      modified = { fg = "#A6B5FF" },
+      modified_visible = { fg = "#A6B5FF" },
+      modified_selected = { fg = "#A6B5FF" },
+    },
   },
 }
