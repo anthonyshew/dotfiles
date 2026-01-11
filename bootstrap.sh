@@ -12,12 +12,23 @@ require_cmd() {
   fi
 }
 
-install_npm_globals() {
-  if command -v npm >/dev/null 2>&1; then
-    echo "Installing global npm packages..."
+install_bun() {
+  if ! command -v bun >/dev/null 2>&1; then
+    echo "Installing bun..."
+    curl -fsSL https://bun.sh/install | bash
+    export BUN_INSTALL="$HOME/.bun"
+    export PATH="$BUN_INSTALL/bin:$PATH"
+  fi
+}
+
+install_bun_globals() {
+  install_bun
+  if command -v bun >/dev/null 2>&1; then
+    echo "Installing global bun packages..."
     bun install -g critique 2>/dev/null
+    bun install -g agent-browser 2>/dev/null && agent-browser install
   else
-    echo "bun not found, skipping global package installation"
+    echo "bun installation failed, skipping global package installation"
   fi
 }
 
@@ -25,7 +36,7 @@ main() {
   cd "$REPO_DIR"
   require_cmd stow
 
-  install_npm_globals
+  install_bun_globals
 
   echo "Linking packages to $TARGET_DIR"
   for pkg in "${PACKAGES[@]}"; do
