@@ -70,6 +70,7 @@ alias oc="opencode"
 
 # Git
 alias gcm="git checkout main && git pull"
+gwt() { git worktree add -b "shew/$1" "../$1" main && cd "../$1"; }
 alias gc="git commit -m"
 alias wip="source ~/.zshrc; git add -A && git commit -m 'WIP $(head -c 16 /dev/urandom | md5 | cut -c 1-5)' && git push"
 alias newbranch="source ~/.zshrc; git checkout -b shew/$(head -c 16 /dev/urandom | md5 | cut -c 1-5)"
@@ -85,7 +86,26 @@ alias projt="cd ~/projects/open/turbo"
 # Dev binaries and executables
 alias devturbo="~/projects/open/turbo/target/debug/turbo"
 alias devturboprod="~/projects/open/turbo/target/release/turbo"
-dt() { ~/projects/open/turbo/target/debug/turbo "$@" --skip-infer; }
+dt() {
+  local dir="$PWD"
+  local turbo_bin=""
+  
+  # Walk up looking for target/debug/turbo
+  while [[ "$dir" != "/" ]]; do
+    if [[ -x "$dir/target/debug/turbo" ]]; then
+      turbo_bin="$dir/target/debug/turbo"
+      break
+    fi
+    dir="$(dirname "$dir")"
+  done
+  
+  # Fallback to main repo
+  if [[ -z "$turbo_bin" ]]; then
+    turbo_bin=~/projects/open/turbo/target/debug/turbo
+  fi
+  
+  "$turbo_bin" "$@" --skip-infer
+}
 alias devcreateturbo="~/projects/open/turbo/packages/create-turbo/dist/cli.js"
 alias devvc="~/projects/open/vercel/packages/cli/dist/vc.js"
 # For making videos, comment out usually!
