@@ -119,9 +119,6 @@ alias nukemodules='find . -name "node_modules" -type d -prune | xargs rm -rf'
 alias killport='kill_port() { lsof -i tcp:$1 | awk "NR!=1 {print \$2}" | xargs kill -9; }; kill_port'
 alias shew="~/projects/open/my-repo/apps/cli-app/target/release/shew-cli"
 
-# AI AF
-alias claude="$HOME/.claude/local/claude"
-
 # Performance stuff below this line
 
 # Initialize completion system (required for compdef)
