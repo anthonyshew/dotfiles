@@ -70,7 +70,7 @@ alias oc="opencode"
 
 # Git
 alias gcm="git checkout main && git pull"
-gwt() { git worktree add -b "shew/$1" "../$1" main && cd "../$1"; }
+gwt() { git worktree add -B "shew/$1" "../$1" main && cd "../$1"; }
 alias gc="git commit -m"
 alias wip="source ~/.zshrc; git add -A && git commit -m 'WIP $(head -c 16 /dev/urandom | md5 | cut -c 1-5)' && git push"
 alias newbranch="source ~/.zshrc; git checkout -b shew/$(head -c 16 /dev/urandom | md5 | cut -c 1-5)"
