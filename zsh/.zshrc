@@ -139,3 +139,8 @@ if [[ -s "$HOME/.bun/_bun" ]]; then
   }
   compdef __load_bun_completions bun
 fi
+
+# ENVIRONMENT VARIABLES
+# DO NOT WRITE ENVIRONMENT VARIABLES HERE DIRECTLY
+# USE THE `security` FUNCTIONALITY FROM MACOS
+export AI_GATEWAY_API_KEY=$(security find-generic-password -a "anthonyshew" -s "AI_GATEWAY_API_KEY" -w)
