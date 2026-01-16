@@ -4,4 +4,4 @@ Don't always tell me I am right. If I am wrong, you can tell me. If I insist, th
 
 When writing JavaScript or TypeScript, NEVER use barrel files (like "import \* from './foo'").
 
-When writing PR descriptions, be as clear and concise as possible. Do not repeat information, and do not describe the code changes verbatim. Concentrate on WHY the changes are important.
+When writing PR descriptions, be as clear and concise as possible. Do not repeat information, and do not describe the code changes verbatim. Concentrate on WHY the changes are important. When the PR has moderate or more complexity, make sure to include information for a reviewer to test or understand the changes.

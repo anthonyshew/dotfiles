@@ -71,6 +71,7 @@ alias oc="opencode"
 # Git
 alias gcm="git checkout main && git pull"
 gwt() { git worktree add -B "shew/$1" "../$1" main && cd "../$1"; }
+gdw() { local wt=$(git rev-parse --show-toplevel); local main=$(git worktree list | grep '\[main\]' | awk '{print $1}'); cd "$main" && git worktree remove "$wt" && git branch -D "shew/$(basename $wt)"; }
 alias gc="git commit -m"
 alias wip="source ~/.zshrc; git add -A && git commit -m 'WIP $(head -c 16 /dev/urandom | md5 | cut -c 1-5)' && git push"
 alias newbranch="source ~/.zshrc; git checkout -b shew/$(head -c 16 /dev/urandom | md5 | cut -c 1-5)"
