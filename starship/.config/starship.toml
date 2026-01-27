@@ -1,23 +1,13 @@
 
 format = '''
-▲ 👟 $all$character
-
+▲ 👟 $directory$git_branch$character
 '''
 
 [cmd_duration]
-disabled=true
+disabled = true
 
 [character]
-format = '  '
-
-[nodejs]
-disabled = true
-
-[golang]
-disabled = true
-
-[rust]
-disabled = true
+format = ''
 
 [docker_context]
 disabled = true
