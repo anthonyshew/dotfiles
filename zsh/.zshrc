@@ -70,7 +70,17 @@ alias oc="opencode"
 
 # Git
 alias gcm="git checkout main && git pull"
-gwt() { local name="${1:-$(head -c 16 /dev/urandom | md5 | cut -c 1-5)}"; git worktree add -B "shew/$name" "../$name" main && cd "../$name"; }
+gwt() {
+  echo -n "What are you building? "
+  read desc
+  if [[ -z "$desc" ]]; then
+    echo "No description provided, aborting."
+    return 1
+  fi
+  local name=$(ai -m openai/gpt-4o-mini "Generate a short git branch name (2-4 words, kebab-case, no prefix) for: $desc. Output ONLY the branch name, nothing else.")
+  echo "Syncing main..."
+  git fetch origin main -q && git checkout main -q && git pull origin main -q && git worktree add -B "shew/$name" "../$name" main && cd "../$name"
+}
 gdw() { local wt=$(git rev-parse --show-toplevel); local main=$(git worktree list | grep '\[main\]' | awk '{print $1}'); cd "$main" && git worktree remove "$wt" && git branch -D "shew/$(basename $wt)"; }
 alias gc="git commit -m"
 alias wip="source ~/.zshrc; git add -A && git commit -m 'WIP $(head -c 16 /dev/urandom | md5 | cut -c 1-5)' && git push"

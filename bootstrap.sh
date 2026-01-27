@@ -27,6 +27,7 @@ install_bun_globals() {
     echo "Installing global bun packages..."
     bun install -g critique 2>/dev/null
     bun install -g agent-browser 2>/dev/null && agent-browser install
+    bun install -g ai-cli 2>/dev/null
   else
     echo "bun installation failed, skipping global package installation"
   fi
