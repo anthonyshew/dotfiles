@@ -13,7 +13,7 @@ clipboard-paste-protection="true"
 macos-titlebar-style="tabs"
 macos-titlebar-proxy-icon="hidden"
 macos-window-shadow="false"
-font-size="15"
+font-size="16"
 font-thicken
 font-thicken-strength="50"
 font-feature="-calt"
@@ -21,3 +21,7 @@ font-feature="-liga"
 font-feature="-dlig"
 mouse-hide-while-typing="true"
 quit-after-last-window-closed=true
+
+# ctrl is actually cmd on macOS
+keybind = ctrl+shift+a=set_font_size:24
+keybind = ctrl+shift+b=reset_font_size

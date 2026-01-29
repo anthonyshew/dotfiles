@@ -65,7 +65,6 @@ alias p='pnpm'
 alias n='nvim'
 alias c='clear'
 alias e='exit'
-alias rec="alacritty --config-file $HOME/.config/alacritty/recording.toml"
 alias oc="opencode"
 
 # Git

@@ -1,7 +1,12 @@
-
+# Default
 format = '''
 ▲ 👟 $directory$git_branch$character
 '''
+
+# For recordings
+# format = '''
+# ▲ 👟 $directory$character
+# '''
 
 [cmd_duration]
 disabled = true

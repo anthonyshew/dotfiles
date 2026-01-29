@@ -21,6 +21,14 @@ install_bun() {
   fi
 }
 
+install_rust() {
+  if ! command -v rustc >/dev/null 2>&1; then
+    echo "Installing rust..."
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+    source "$HOME/.cargo/env"
+  fi
+}
+
 install_bun_globals() {
   install_bun
   if command -v bun >/dev/null 2>&1; then
@@ -37,6 +45,7 @@ main() {
   cd "$REPO_DIR"
   require_cmd stow
 
+  install_rust
   install_bun_globals
 
   echo "Linking packages to $TARGET_DIR"
