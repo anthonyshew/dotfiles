@@ -23,5 +23,5 @@ mouse-hide-while-typing="true"
 quit-after-last-window-closed=true
 
 # ctrl is actually cmd on macOS
-keybind = ctrl+shift+a=set_font_size:24
+keybind = ctrl+shift+a=set_font_size:36
 keybind = ctrl+shift+b=reset_font_size
