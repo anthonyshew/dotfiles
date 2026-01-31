@@ -2,6 +2,26 @@
   "$schema": "https://opencode.ai/config.json",
   "theme": "vercel",
   "model": "vercel/anthropic/claude-opus-4.5",
+  "mcp": {
+    "linear": {
+      "type": "remote",
+      "url": "https://mcp.linear.app/mcp",
+      "enabled": true
+    }
+  },
+  "tools": {
+    "linear_*": false
+  },
+  "agent": {
+    "linear": {
+      "description": "Manages Linear issues - create, update, search, and track tasks",
+      "mode": "subagent",
+      "tools": {
+        "linear_*": true
+      },
+      "prompt": "You help manage Linear issues. You can search, create, update, and track issues. When creating issues, ask for team and project if not specified."
+    }
+  },
   "keybinds": {
     "agent_cycle_reverse": "none",
     "model_cycle_recent": "shift+tab"
