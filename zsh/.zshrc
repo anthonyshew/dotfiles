@@ -1,6 +1,26 @@
 # No ZSH shell sessions thing, yuck.
 export SHELL_SESSIONS_DISABLE=1
 
+# Command execution time (right-aligned, dimmed)
+__cmd_start=0
+preexec() { __cmd_start=$EPOCHREALTIME }
+precmd() {
+  if (( __cmd_start > 0 )); then
+    local elapsed=$(( EPOCHREALTIME - __cmd_start ))
+    local ms=$(( elapsed * 1000 ))
+    local display
+    if (( ms < 1000 )); then
+      display="${ms%.*}ms"
+    elif (( elapsed < 60 )); then
+      printf -v display "%.2fs" $elapsed
+    else
+      display="$((${elapsed%.*} / 60))m $((${elapsed%.*} % 60))s"
+    fi
+    printf "\e[90m%*s\e[0m\n" $COLUMNS "[$display]"
+    __cmd_start=0
+  fi
+}
+
 # Homebrew
 export HOMEBREW_PREFIX="/opt/homebrew"
 export HOMEBREW_CELLAR="/opt/homebrew/Cellar"
