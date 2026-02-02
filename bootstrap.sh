@@ -3,7 +3,7 @@ set -euo pipefail
 
 REPO_DIR="${REPO_DIR:-$(pwd)}"
 TARGET_DIR="${TARGET_DIR:-$HOME}"
-PACKAGES=(zsh starship git ghostty nvim zed tmux lazygit bat gh gh-dash opencode)
+PACKAGES=(zsh starship git ghostty nvim zed tmux lazygit bat gh gh-dash opencode eza)
 
 require_cmd() {
   if ! command -v "$1" >/dev/null 2>&1; then
@@ -18,6 +18,13 @@ install_bun() {
     curl -fsSL https://bun.sh/install | bash
     export BUN_INSTALL="$HOME/.bun"
     export PATH="$BUN_INSTALL/bin:$PATH"
+  fi
+}
+
+install_eza() {
+  if ! command -v eza >/dev/null 2>&1; then
+    echo "Installing eza..."
+    brew install eza
   fi
 }
 
@@ -46,6 +53,7 @@ main() {
   require_cmd stow
 
   install_rust
+  install_eza
   install_bun_globals
 
   echo "Linking packages to $TARGET_DIR"

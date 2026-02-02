@@ -20,6 +20,9 @@ source ~/.orbstack/shell/init.zsh 2>/dev/null || :
 # Default editor
 export EDITOR="nvim"
 
+# eza config directory
+export EZA_CONFIG_DIR="$HOME/.config/eza"
+
 # Consolidated PATH (single assignment is faster than multiple appends)
 export PATH="\
 $HOME/.local/bin:\
@@ -60,6 +63,7 @@ source "$_zsh_starship_cache"
 
 
 # My aliases
+alias ls='eza'
 alias t='tmux'
 alias p='pnpm'
 alias n='nvim'

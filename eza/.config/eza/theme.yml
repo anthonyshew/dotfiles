@@ -1,0 +1,150 @@
+# Vercel theme for eza
+# Colors from nvim/bat Vercel theme
+
+filekinds:
+  directory:
+    foreground: "#47a8ff"
+    is_bold: true
+  symlink:
+    foreground: "#c473fc"
+  socket:
+    foreground: "#ff4d8d"
+  pipe:
+    foreground: "#ff4d8d"
+  block_device:
+    foreground: "#ff4d8d"
+    is_bold: true
+  char_device:
+    foreground: "#ff4d8d"
+    is_bold: true
+  executable:
+    foreground: "#00cb50"
+    is_bold: true
+  normal:
+    foreground: "#eeeeee"
+
+perms:
+  user_read:
+    foreground: "#eeeeee"
+  user_write:
+    foreground: "#eeeeee"
+  user_execute_file:
+    foreground: "#00cb50"
+  user_execute_other:
+    foreground: "#00cb50"
+  group_read:
+    foreground: "#a0a0a0"
+  group_write:
+    foreground: "#a0a0a0"
+  group_execute:
+    foreground: "#00cb50"
+  other_read:
+    foreground: "#a0a0a0"
+  other_write:
+    foreground: "#a0a0a0"
+  other_execute:
+    foreground: "#00cb50"
+  special_user_file:
+    foreground: "#ff4d8d"
+  special_other:
+    foreground: "#ff4d8d"
+  attribute:
+    foreground: "#c473fc"
+
+size:
+  number_byte:
+    foreground: "#eeeeee"
+  number_kilo:
+    foreground: "#eeeeee"
+  number_mega:
+    foreground: "#eeeeee"
+  number_giga:
+    foreground: "#ff4d8d"
+  number_huge:
+    foreground: "#ff4d8d"
+    is_bold: true
+  unit_byte:
+    foreground: "#a0a0a0"
+  unit_kilo:
+    foreground: "#a0a0a0"
+  unit_mega:
+    foreground: "#a0a0a0"
+  unit_giga:
+    foreground: "#a0a0a0"
+  unit_huge:
+    foreground: "#a0a0a0"
+
+users:
+  user_you:
+    foreground: "#eeeeee"
+  user_other:
+    foreground: "#a0a0a0"
+  group_yours:
+    foreground: "#eeeeee"
+  group_other:
+    foreground: "#a0a0a0"
+  group_root:
+    foreground: "#ff4d8d"
+
+links:
+  normal:
+    foreground: "#eeeeee"
+  multi_link_file:
+    foreground: "#c473fc"
+
+git:
+  new:
+    foreground: "#00cb50"
+  modified:
+    foreground: "#47a8ff"
+  deleted:
+    foreground: "#ff4d8d"
+  renamed:
+    foreground: "#c473fc"
+  ignored:
+    foreground: "#a0a0a0"
+  conflicted:
+    foreground: "#ff4d8d"
+    is_bold: true
+
+git_repo:
+  branch_main:
+    foreground: "#00cb50"
+  branch_other:
+    foreground: "#c473fc"
+  git_clean:
+    foreground: "#00cb50"
+  git_dirty:
+    foreground: "#ff4d8d"
+
+punctuation:
+  foreground: "#a0a0a0"
+
+date:
+  foreground: "#a0a0a0"
+
+inode:
+  foreground: "#a0a0a0"
+
+blocks:
+  foreground: "#a0a0a0"
+
+header:
+  foreground: "#eeeeee"
+  is_bold: true
+
+octal:
+  foreground: "#c473fc"
+
+flags:
+  foreground: "#ff4d8d"
+
+symlink_path:
+  foreground: "#c473fc"
+
+broken_symlink:
+  foreground: "#ff4d8d"
+
+broken_path_overlay:
+  foreground: "#ff4d8d"
+  is_strikethrough: true
