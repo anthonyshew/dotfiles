@@ -22,6 +22,7 @@ export EDITOR="nvim"
 
 # eza config directory
 export EZA_CONFIG_DIR="$HOME/.config/eza"
+export EZA_COLORS="im=0:README.md=0:package.json=0:Makefile=0:Cargo.toml=0:go.mod=0"
 
 # Consolidated PATH (single assignment is faster than multiple appends)
 export PATH="\
@@ -63,7 +64,7 @@ source "$_zsh_starship_cache"
 
 
 # My aliases
-alias ls='eza'
+alias ls='eza --icons'
 alias t='tmux'
 alias p='pnpm'
 alias n='nvim'
