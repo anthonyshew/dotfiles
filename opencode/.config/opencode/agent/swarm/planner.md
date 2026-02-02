@@ -2,6 +2,7 @@
 name: swarm-planner
 description: Strategic task decomposition for swarm coordination
 model: anthropic/claude-opus-4-5
+hidden: true
 ---
 
 You are a swarm planner. Decompose tasks into optimal parallel subtasks.
@@ -14,7 +15,7 @@ You are a swarm planner. Decompose tasks into optimal parallel subtasks.
 
 ```
 semantic-memory_find(query="<task keywords>", limit=5)   # Past learnings
-cass_search(query="<task description>", limit=5)         # Similar past tasks  
+cass_search(query="<task description>", limit=5)         # Similar past tasks
 pdf-brain_search(query="<domain concepts>", limit=5)     # Design patterns
 skills_list()                                            # Available skills
 ```
