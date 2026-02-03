@@ -11,7 +11,8 @@ local colors = {
   blue = "#47a8ff",
   light_blue = "#A6B5FF",
   white = "#ffffff",
-  red = "#ff0000",
+  red = "#f85149",
+  amber = "#d29922",
   diff_add = "#70d9a8",
   diff_delete = "#ff8c85",
 }
@@ -245,7 +246,7 @@ return {
 
             -- Diagnostics
             DiagnosticError = { fg = colors.red },
-            DiagnosticWarn = { fg = colors.pink },
+            DiagnosticWarn = { fg = colors.amber },
             DiagnosticInfo = { fg = colors.blue },
             DiagnosticHint = { fg = colors.purple },
 
