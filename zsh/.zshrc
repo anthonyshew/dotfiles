@@ -110,7 +110,7 @@ gdw() {
   [[ "$1" == "--force" || "$1" == "-f" ]] && force="--force"
   local wt=$(git rev-parse --show-toplevel)
   local main=$(git worktree list | grep '\[main\]' | awk '{print $1}')
-  cd "$main" && git worktree remove $force "$wt" && git branch -D "shew/$(basename $wt)"
+  git worktree remove $force "$wt" && cd "$main" && git branch -D "shew/$(basename $wt)"
 }
 alias gc="git commit -m"
 alias wip="source ~/.zshrc; git add -A && git commit -m 'WIP $(head -c 16 /dev/urandom | md5 | cut -c 1-5)' && git push"
