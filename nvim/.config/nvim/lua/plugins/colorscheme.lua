@@ -13,6 +13,7 @@ local colors = {
   white = "#ffffff",
   red = "#f85149",
   amber = "#d29922",
+  light_amber = "#f5d69b",
   diff_add = "#70d9a8",
   diff_delete = "#ff8c85",
 }
@@ -248,7 +249,16 @@ return {
             DiagnosticError = { fg = colors.red },
             DiagnosticWarn = { fg = colors.amber },
             DiagnosticInfo = { fg = colors.blue },
-            DiagnosticHint = { fg = colors.purple },
+            DiagnosticHint = { fg = colors.light_amber },
+            DiagnosticSignError = { fg = colors.red },
+            DiagnosticSignWarn = { fg = colors.amber },
+            DiagnosticSignInfo = { fg = colors.blue },
+            DiagnosticSignHint = { fg = colors.light_amber },
+
+            -- LSP lightbulb (code actions)
+            LspLightBulb = { fg = colors.light_amber },
+            LightBulbSign = { fg = colors.light_amber },
+            LightBulbVirtualText = { fg = colors.light_amber },
 
             -- WhichKey
             WhichKey = { fg = colors.fg },
