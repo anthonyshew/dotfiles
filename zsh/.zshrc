@@ -105,7 +105,13 @@ gwt() {
   echo "Syncing main..."
   git fetch origin main -q && git checkout main -q && git pull origin main -q && git worktree add -B "shew/$name" "../$name" main && cd "../$name"
 }
-gdw() { local wt=$(git rev-parse --show-toplevel); local main=$(git worktree list | grep '\[main\]' | awk '{print $1}'); cd "$main" && git worktree remove "$wt" && git branch -D "shew/$(basename $wt)"; }
+gdw() {
+  local force=""
+  [[ "$1" == "--force" || "$1" == "-f" ]] && force="--force"
+  local wt=$(git rev-parse --show-toplevel)
+  local main=$(git worktree list | grep '\[main\]' | awk '{print $1}')
+  cd "$main" && git worktree remove $force "$wt" && git branch -D "shew/$(basename $wt)"
+}
 alias gc="git commit -m"
 alias wip="source ~/.zshrc; git add -A && git commit -m 'WIP $(head -c 16 /dev/urandom | md5 | cut -c 1-5)' && git push"
 alias newbranch="source ~/.zshrc; git checkout -b shew/$(head -c 16 /dev/urandom | md5 | cut -c 1-5)"
