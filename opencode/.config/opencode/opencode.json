@@ -22,6 +22,12 @@
       "prompt": "You help manage Linear issues. You can search, create, update, and track issues. When creating issues, ask for team and project if not specified."
     }
   },
+  "permission": {
+    "external_directory": {
+      "/tmp/**": "allow",
+      "/private/tmp/**": "allow"
+    }
+  },
   "keybinds": {
     "agent_cycle_reverse": "none",
     "model_cycle_recent": "shift+tab"
