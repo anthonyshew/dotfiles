@@ -90,7 +90,7 @@ alias p='pnpm'
 alias n='nvim'
 alias c='clear'
 alias e='exit'
-alias oc="opencode"
+alias oc="OPENCODE_EXPERIMENTAL_MARKDOWN=true opencode"
 
 # Git
 alias gcm="git checkout main && git pull"
@@ -117,6 +117,9 @@ alias wip="source ~/.zshrc; git add -A && git commit -m 'WIP $(head -c 16 /dev/u
 alias newbranch="source ~/.zshrc; git checkout -b shew/$(head -c 16 /dev/urandom | md5 | cut -c 1-5)"
 # Changed from alias to function - alias with $() runs git at shell startup!
 cdgr() { cd "$(git rev-parse --show-toplevel)"; }
+
+# Copy pwd without a newline, so annoying
+cpwd() { printf '%s' "$PWD" | pbcopy; }
 
 # Projects
 alias projo="cd ~/projects/open"
