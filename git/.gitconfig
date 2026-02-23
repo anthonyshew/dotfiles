@@ -2,7 +2,7 @@
 	email = anthonyshew@gmail.com
 	name = Anthony Shew
 [core]
-	editor = nvim
+	editor = nvim --clean
 	excludesfile = ~/.gitignore_global
 [init]
 	defaultBranch = main

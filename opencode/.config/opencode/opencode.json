@@ -15,7 +15,8 @@
   "permission": {
     "external_directory": {
       "/tmp/**": "allow",
-      "/private/tmp/**": "allow"
+      "/private/tmp/**": "allow",
+      "~/.cargo/registry/**": "allow"
     }
   },
   "keybinds": {
