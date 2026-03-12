@@ -50,9 +50,7 @@ $HOME/.local/bin:\
 $HOME/.opencode/bin:\
 $BUN_INSTALL/bin:\
 $PNPM_HOME:\
-/usr/local/go/bin:\
 $HOME/go/bin:\
-/opt/homebrew/opt/go@1.20/bin:\
 $HOME/bin:\
 /opt/homebrew/bin:\
 /opt/homebrew/sbin:\
@@ -131,24 +129,33 @@ alias projt="cd ~/projects/open/turbo"
 alias devturbo="~/projects/open/turbo/target/debug/turbo"
 alias devturboprod="~/projects/open/turbo/target/release/turbo"
 dt() {
+  ~/projects/open/turbo/target/debug/turbo "$@" --skip-infer
+}
+tbp() {
   local dir="$PWD"
-  local turbo_bin=""
-  
-  # Walk up looking for target/debug/turbo
   while [[ "$dir" != "/" ]]; do
     if [[ -x "$dir/target/debug/turbo" ]]; then
-      turbo_bin="$dir/target/debug/turbo"
-      break
+      echo -n "$dir/target/debug/turbo" | pbcopy
+      echo "Copied: $dir/target/debug/turbo"
+      return
     fi
     dir="$(dirname "$dir")"
   done
-  
-  # Fallback to main repo
-  if [[ -z "$turbo_bin" ]]; then
-    turbo_bin=~/projects/open/turbo/target/debug/turbo
-  fi
-  
-  "$turbo_bin" "$@" --skip-infer
+  echo "No target/debug/turbo found above $PWD"
+  return 1
+}
+tbpr() {
+  local dir="$PWD"
+  while [[ "$dir" != "/" ]]; do
+    if [[ -x "$dir/target/release/turbo" ]]; then
+      echo -n "$dir/target/release/turbo" | pbcopy
+      echo "Copied: $dir/target/release/turbo"
+      return
+    fi
+    dir="$(dirname "$dir")"
+  done
+  echo "No target/release/turbo found above $PWD"
+  return 1
 }
 alias devcreateturbo="~/projects/open/turbo/packages/create-turbo/dist/cli.js"
 alias devvc="~/projects/open/vercel/packages/cli/dist/vc.js"
@@ -188,3 +195,6 @@ fi
 # DO NOT WRITE ENVIRONMENT VARIABLES HERE DIRECTLY
 # USE THE `security` FUNCTIONALITY FROM MACOS
 export AI_GATEWAY_API_KEY=$(security find-generic-password -a "anthonyshew" -s "AI_GATEWAY_API_KEY" -w)
+
+# bun completions
+[ -s "/private/var/folders/0r/90dc16493lx7gw025k4z8sw40000gn/T/lockfile-validate-ixynZs/.bun-install/_bun" ] && source "/private/var/folders/0r/90dc16493lx7gw025k4z8sw40000gn/T/lockfile-validate-ixynZs/.bun-install/_bun"
