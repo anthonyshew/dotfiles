@@ -6,10 +6,16 @@
       "type": "remote",
       "url": "https://mcp.linear.app/mcp",
       "enabled": true
+    },
+    "datadog": {
+      "type": "remote",
+      "url": "https://mcp.datadoghq.com/api/unstable/mcp-server/mcp?toolsets=all",
+      "enabled": true
     }
   },
   "tools": {
-    "linear_*": false
+    "linear_*": false,
+    "datadog_*": false
   },
   "permission": {
     "external_directory": {
