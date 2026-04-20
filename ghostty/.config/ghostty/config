@@ -22,6 +22,43 @@ font-feature="-dlig"
 mouse-hide-while-typing="true"
 quit-after-last-window-closed=true
 
-# ctrl is actually cmd on macOS
+# Font size
 keybind = ctrl+shift+a=set_font_size:36
 keybind = ctrl+shift+b=reset_font_size
+
+# tmux-like leader bindings.
+keybind = ctrl+a>ctrl+a=text:\x01
+keybind = ctrl+a>ctrl+r=reload_config
+keybind = ctrl+a>c=new_tab
+keybind = ctrl+a>ctrl+c=new_tab
+keybind = ctrl+a>n=next_tab
+keybind = ctrl+a>ctrl+n=next_tab
+keybind = ctrl+a>p=previous_tab
+keybind = ctrl+a>ctrl+p=previous_tab
+keybind = ctrl+a>q=close_tab:this
+keybind = ctrl+a>ctrl+q=close_tab:this
+keybind = ctrl+a>r=prompt_tab_title
+keybind = ctrl+a>h=new_split:right
+keybind = ctrl+a>ctrl+h=new_split:right
+keybind = ctrl+a>v=new_split:down
+keybind = ctrl+a>ctrl+v=new_split:down
+keybind = ctrl+a>y=resize_split:left,50
+keybind = ctrl+a>ctrl+y=resize_split:left,50
+keybind = ctrl+a>u=resize_split:right,50
+keybind = ctrl+a>ctrl+u=resize_split:right,50
+keybind = ctrl+a>g=resize_split:up,50
+keybind = ctrl+a>ctrl+g=resize_split:up,50
+keybind = ctrl+a>t=resize_split:down,50
+keybind = ctrl+a>ctrl+t=resize_split:down,50
+keybind = ctrl+a>z=toggle_split_zoom
+keybind = ctrl+a>ctrl+z=toggle_split_zoom
+keybind = ctrl+a>left=move_tab:-1
+keybind = ctrl+a>ctrl+left=move_tab:-1
+keybind = ctrl+a>right=move_tab:1
+keybind = ctrl+a>ctrl+right=move_tab:1
+
+# Pane navigation mirrors your prefix-less tmux binds.
+keybind = ctrl+l=goto_split:left
+keybind = ctrl+semicolon=goto_split:right
+keybind = ctrl+k=goto_split:top
+keybind = ctrl+j=goto_split:bottom

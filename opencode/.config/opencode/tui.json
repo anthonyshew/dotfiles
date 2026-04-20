@@ -3,6 +3,6 @@
   "theme": "vercel",
   "keybinds": {
     "agent_cycle_reverse": "none",
-    "model_cycle_recent": "shift+tab"
+    "model_cycle_favorite": "shift+tab"
   }
 }
