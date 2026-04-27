@@ -3,6 +3,19 @@ export SHELL_SESSIONS_DISABLE=1
 
 # Command execution time (right-aligned, dimmed)
 __cmd_start=0
+__ghostty_title_pwd=""
+
+__ghostty_update_title() {
+  [[ "$TERM_PROGRAM" == "ghostty" && "$PWD" != "$__ghostty_title_pwd" ]] || return
+
+  local root title
+  root="$(git rev-parse --show-toplevel 2>/dev/null)"
+  title="${root:-$PWD:t}"
+  title="${title:t}"
+  printf '\e]0;%s\a' "$title"
+  __ghostty_title_pwd="$PWD"
+}
+
 preexec() { __cmd_start=$EPOCHREALTIME }
 precmd() {
   if (( __cmd_start > 0 )); then
@@ -20,6 +33,8 @@ precmd() {
     __cmd_start=0
   fi
 }
+
+autoload -Uz add-zsh-hook
 
 # Homebrew
 export HOMEBREW_PREFIX="/opt/homebrew"
@@ -198,3 +213,7 @@ export AI_GATEWAY_API_KEY=$(security find-generic-password -a "anthonyshew" -s "
 
 # bun completions
 [ -s "/private/var/folders/0r/90dc16493lx7gw025k4z8sw40000gn/T/lockfile-validate-ixynZs/.bun-install/_bun" ] && source "/private/var/folders/0r/90dc16493lx7gw025k4z8sw40000gn/T/lockfile-validate-ixynZs/.bun-install/_bun"
+
+# Register title hook last so it runs after Ghostty's shell-integration hooks.
+add-zsh-hook chpwd __ghostty_update_title
+add-zsh-hook precmd __ghostty_update_title

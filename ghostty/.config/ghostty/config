@@ -1,4 +1,3 @@
-title="Ghostty"
 background="#000000"
 font-family="GeistMono Nerd Font"
 window-padding-x="10"
@@ -7,7 +6,7 @@ window-padding-color="extend"
 window-padding-y="2"
 cursor-style = block
 cursor-style-blink = false
-shell-integration-features = no-cursor
+shell-integration-features = no-cursor,no-title
 clipboard-trim-trailing-spaces="true"
 clipboard-paste-protection="true"
 macos-titlebar-style="tabs"
@@ -21,10 +20,16 @@ font-feature="-liga"
 font-feature="-dlig"
 mouse-hide-while-typing="true"
 quit-after-last-window-closed=true
+unfocused-split-opacity=1.0
+split-divider-color="#444444"
 
 # Font size
-keybind = ctrl+shift+a=set_font_size:36
-keybind = ctrl+shift+b=reset_font_size
+keybind = all:ctrl+==increase_font_size:1
+keybind = all:ctrl++=increase_font_size:1
+keybind = all:ctrl+-=decrease_font_size:1
+keybind = all:ctrl+0=reset_font_size
+keybind = all:ctrl+shift+a=set_font_size:36
+keybind = all:ctrl+shift+b=reset_font_size
 
 # tmux-like leader bindings.
 keybind = ctrl+a>ctrl+a=text:\x01
@@ -42,6 +47,15 @@ keybind = ctrl+a>h=new_split:right
 keybind = ctrl+a>ctrl+h=new_split:right
 keybind = ctrl+a>v=new_split:down
 keybind = ctrl+a>ctrl+v=new_split:down
+keybind = ctrl+a>e=equalize_splits
+keybind = ctrl+a>ctrl+e=equalize_splits
+
+# Large split jumps work best from an equalized layout.
+keybind = ctrl+a>shift+y=resize_split:left,300
+keybind = ctrl+a>shift+u=resize_split:right,300
+keybind = ctrl+a>shift+g=resize_split:up,180
+keybind = ctrl+a>shift+t=resize_split:down,180
+
 keybind = ctrl+a>y=resize_split:left,50
 keybind = ctrl+a>ctrl+y=resize_split:left,50
 keybind = ctrl+a>u=resize_split:right,50

@@ -1,6 +1,7 @@
 [user]
 	email = anthonyshew@gmail.com
 	name = Anthony Shew
+	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC+NScm0wQ4XwJ+kx50pIWYLEqsQcIAc7EsEgoCeggVL
 [core]
 	editor = nvim --clean
 	excludesfile = ~/.gitignore_global
@@ -23,3 +24,15 @@
 	tool = critique
 [difftool "critique"]
 	cmd = critique difftool \"$LOCAL\" \"$REMOTE\"
+[gpg]
+	format = ssh
+[gpg "ssh"]
+	program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+[commit]
+	gpgsign = true
+[credential "https://github.com"]
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential
