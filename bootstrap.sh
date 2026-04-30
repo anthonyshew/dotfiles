@@ -106,12 +106,47 @@ install_gh() {
   install_command gh gh
 }
 
-install_stow() {
-  install_command stow stow
-}
-
 install_curl() {
   install_command curl curl
+}
+
+install_stow_from_source() {
+  local version="2.4.1"
+  local tmpdir
+
+  install_curl
+  install_command perl perl
+  install_command make make
+  install_command tar tar
+  install_command gzip gzip
+
+  tmpdir="$(mktemp -d)"
+  (
+    trap 'rm -rf "$tmpdir"' EXIT
+    cd "$tmpdir"
+    curl -fsSLO "https://ftp.gnu.org/gnu/stow/stow-$version.tar.gz"
+    tar -xzf "stow-$version.tar.gz"
+    cd "stow-$version"
+    ./configure --prefix="$HOME/.local"
+    make install
+  )
+
+  export PATH="$HOME/.local/bin:$PATH"
+}
+
+install_stow() {
+  if has_cmd stow; then
+    return
+  fi
+
+  echo "Installing stow..."
+  if install_system_package stow; then
+    return
+  fi
+
+  echo "System package for stow unavailable; installing GNU Stow from source..."
+  install_stow_from_source
+  require_cmd stow
 }
 
 install_opencode() {
@@ -147,8 +182,8 @@ main() {
   detect_platform
   detect_package_manager
 
-  install_stow
   install_curl
+  install_stow
   install_rust
   install_eza
   install_gh
