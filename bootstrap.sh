@@ -89,12 +89,83 @@ install_command() {
   fi
 }
 
+install_fzf_from_release() {
+  local arch
+  local version
+  local url
+  local tmpdir
+
+  install_curl
+  install_command tar tar
+  install_command gzip gzip
+
+  case "$(uname -m)" in
+    x86_64 | amd64) arch="amd64" ;;
+    arm64 | aarch64) arch="arm64" ;;
+    armv6l | armv7l) arch="armv7" ;;
+    *)
+      echo "Unsupported architecture for fzf: $(uname -m)" >&2
+      exit 1
+      ;;
+  esac
+
+  version="$(curl -fsSIL -o /dev/null -w '%{url_effective}' https://github.com/junegunn/fzf/releases/latest | perl -ne 'print "$1" if m{/tag/v([^/]+)$}')"
+  if [ -z "$version" ]; then
+    echo "Could not determine latest fzf version" >&2
+    exit 1
+  fi
+
+  url="https://github.com/junegunn/fzf/releases/latest/download/fzf-${version}-linux_${arch}.tar.gz"
+  tmpdir="$(mktemp -d)"
+  (
+    trap 'rm -rf "$tmpdir"' EXIT
+    cd "$tmpdir"
+    curl -fsSL -o fzf.tar.gz "$url"
+    tar -xzf fzf.tar.gz fzf
+    mkdir -p "$HOME/.local/bin"
+    cp fzf "$HOME/.local/bin/fzf"
+    chmod +x "$HOME/.local/bin/fzf"
+  )
+
+  export PATH="$HOME/.local/bin:$PATH"
+}
+
 install_fzf() {
-  install_command fzf fzf
+  if has_cmd fzf; then
+    return
+  fi
+
+  echo "Installing fzf..."
+  if install_system_package fzf; then
+    return
+  fi
+
+  if [ "$PLATFORM" = "linux" ]; then
+    echo "System package for fzf unavailable; installing fzf from release..."
+    install_fzf_from_release
+    require_cmd fzf
+    return
+  fi
+
+  require_cmd fzf
 }
 
 install_rg() {
-  install_command rg ripgrep
+  if has_cmd rg; then
+    return
+  fi
+
+  echo "Installing rg..."
+  if install_system_package ripgrep; then
+    return
+  fi
+
+  echo "System package for rg unavailable; installing ripgrep with cargo..."
+  ensure_cargo_path
+  require_cmd cargo
+  cargo install ripgrep
+  export PATH="$HOME/.cargo/bin:$PATH"
+  require_cmd rg
 }
 
 install_fd() {
@@ -105,18 +176,39 @@ install_fd() {
   echo "Installing fd..."
   case "$PACKAGE_MANAGER" in
     apt)
-      install_system_package fd-find
-      if ! has_cmd fd && has_cmd fdfind; then
-        mkdir -p "$HOME/.local/bin"
-        ln -sfn "$(command -v fdfind)" "$HOME/.local/bin/fd"
-        export PATH="$HOME/.local/bin:$PATH"
+      if install_system_package fd-find; then
+        if ! has_cmd fd && has_cmd fdfind; then
+          mkdir -p "$HOME/.local/bin"
+          ln -sfn "$(command -v fdfind)" "$HOME/.local/bin/fd"
+          export PATH="$HOME/.local/bin:$PATH"
+        fi
+      else
+        echo "System package for fd unavailable; installing fd-find with cargo..."
+        ensure_cargo_path
+        require_cmd cargo
+        cargo install fd-find
+        export PATH="$HOME/.cargo/bin:$PATH"
       fi
       ;;
     dnf)
-      install_system_package fd-find
+      if install_system_package fd-find; then
+        return
+      fi
+      echo "System package for fd unavailable; installing fd-find with cargo..."
+      ensure_cargo_path
+      require_cmd cargo
+      cargo install fd-find
+      export PATH="$HOME/.cargo/bin:$PATH"
       ;;
     *)
-      install_system_package fd
+      if install_system_package fd; then
+        return
+      fi
+      echo "System package for fd unavailable; installing fd-find with cargo..."
+      ensure_cargo_path
+      require_cmd cargo
+      cargo install fd-find
+      export PATH="$HOME/.cargo/bin:$PATH"
       ;;
   esac
 
