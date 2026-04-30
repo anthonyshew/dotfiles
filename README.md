@@ -1,6 +1,6 @@
-# Dotfiles managed with GNU Stow
+# Dotfiles
 
-This repo is organized into "packages" (directories) that mirror `$HOME`. Symlinks are created via GNU Stow so your home directory stays clean.
+This repo is organized into "packages" (directories) that mirror `$HOME`. `bootstrap.sh` links package contents into your home directory so the repo remains the source of truth.
 
 The shared config is intended to work on macOS and Linux. Platform-specific pieces live in `macos/` and `linux/`.
 
@@ -29,10 +29,8 @@ Add more packages by creating new directories and mirroring the target paths ins
 1. Clone this repo to `~/dotfiles` (or any path).
 2. From repo root, run `./bootstrap.sh` (defaults target to `$HOME`).
 
-`bootstrap.sh` detects macOS or Linux, installs missing core tools with Homebrew, apt, dnf, or pacman, then stows common packages plus the current platform package.
+`bootstrap.sh` detects macOS or Linux, installs missing core tools with Homebrew, apt, dnf, or pacman, then links common packages plus the current platform package.
 
 Common commands:
-- `stow zsh starship git ghostty nvim zed tmux lazygit bat gh gh-dash opencode eza macos` — link packages manually on macOS.
-- `stow zsh starship git ghostty nvim zed tmux lazygit bat gh gh-dash opencode eza linux` — link packages manually on Linux.
-- `stow -D nvim` — remove links for a package.
-- `stow --target /some/dir pkg` — link into a different target.
+- `./bootstrap.sh` — link packages for the current platform.
+- `TARGET_DIR=/some/dir ./bootstrap.sh` — link into a different target.

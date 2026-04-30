@@ -187,48 +187,6 @@ install_curl() {
   install_command curl curl
 }
 
-install_stow_from_source() {
-  local version="2.4.1"
-  local tmpdir
-
-  install_curl
-  install_command perl perl
-  if [ "$PACKAGE_MANAGER" = "dnf" ]; then
-    install_system_package perl-File-Copy
-  fi
-  install_command make make
-  install_command tar tar
-  install_command gzip gzip
-
-  tmpdir="$(mktemp -d)"
-  (
-    trap 'rm -rf "$tmpdir"' EXIT
-    cd "$tmpdir"
-    curl -fsSLO "https://ftp.gnu.org/gnu/stow/stow-$version.tar.gz"
-    tar -xzf "stow-$version.tar.gz"
-    cd "stow-$version"
-    ./configure --prefix="$HOME/.local"
-    make install
-  )
-
-  export PATH="$HOME/.local/bin:$PATH"
-}
-
-install_stow() {
-  if has_cmd stow; then
-    return
-  fi
-
-  echo "Installing stow..."
-  if install_system_package stow; then
-    return
-  fi
-
-  echo "System package for stow unavailable; installing GNU Stow from source..."
-  install_stow_from_source
-  require_cmd stow
-}
-
 install_opencode() {
   if ! has_cmd opencode; then
     echo "Installing opencode..."
@@ -257,14 +215,83 @@ install_bun_globals() {
   fi
 }
 
+resolve_link_target() {
+  local link="$1"
+  local target="$2"
+  local target_dir
+  local target_base
+
+  if [[ "$target" = /* ]]; then
+    printf '%s\n' "$target"
+    return
+  fi
+
+  target_dir="$(dirname "$target")"
+  target_base="$(basename "$target")"
+  (
+    cd "$(dirname "$link")/$target_dir" 2>/dev/null && printf '%s/%s\n' "$PWD" "$target_base"
+  )
+}
+
+link_entry() {
+  local src="$1"
+  local dest="$2"
+  local existing_target
+  local existing_resolved
+
+  if [ -d "$src" ] && [ ! -L "$src" ]; then
+    mkdir -p "$dest"
+    local child
+    shopt -s dotglob nullglob
+    for child in "$src"/*; do
+      link_entry "$child" "$dest/$(basename "$child")"
+    done
+    shopt -u dotglob nullglob
+    return
+  fi
+
+  mkdir -p "$(dirname "$dest")"
+  if [ -L "$dest" ]; then
+    existing_target="$(readlink "$dest")"
+    existing_resolved="$(resolve_link_target "$dest" "$existing_target")"
+    if [ "$existing_resolved" = "$src" ]; then
+      return
+    fi
+    echo "Refusing to replace existing symlink: $dest -> $existing_target" >&2
+    return 1
+  fi
+  if [ -e "$dest" ]; then
+    echo "Refusing to replace existing path: $dest" >&2
+    return 1
+  fi
+  ln -s "$src" "$dest"
+}
+
+link_package() {
+  local pkg="$1"
+  local src="$REPO_DIR/$pkg"
+  local child
+
+  if [ ! -d "$src" ]; then
+    echo "Skipping missing package: $pkg"
+    return
+  fi
+
+  shopt -s dotglob nullglob
+  for child in "$src"/*; do
+    link_entry "$child" "$TARGET_DIR/$(basename "$child")"
+  done
+  shopt -u dotglob nullglob
+}
+
 main() {
   cd "$REPO_DIR"
+  REPO_DIR="$(pwd)"
 
   detect_platform
   detect_package_manager
 
   install_curl
-  install_stow
   install_rust
   install_eza
   install_gh
@@ -273,11 +300,7 @@ main() {
 
   echo "Linking packages to $TARGET_DIR"
   for pkg in "${COMMON_PACKAGES[@]}" "$PLATFORM"; do
-    if [ -d "$pkg" ]; then
-      stow --target "$TARGET_DIR" "$pkg"
-    else
-      echo "Skipping missing package: $pkg"
-    fi
+    link_package "$pkg"
   done
 
   echo "Done. Edit package list in bootstrap.sh as needed."
