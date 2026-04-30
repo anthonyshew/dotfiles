@@ -141,7 +141,7 @@ install_gh_from_release() {
       ;;
   esac
 
-  version="$(curl -fsSL https://api.github.com/repos/cli/cli/releases/latest | perl -ne 'print "$1" if /"tag_name": "v([^"]+)"/')"
+  version="$(curl -fsSIL -o /dev/null -w '%{url_effective}' https://github.com/cli/cli/releases/latest | perl -ne 'print "$1" if m{/tag/v([^/]+)$}')"
   if [ -z "$version" ]; then
     echo "Could not determine latest GitHub CLI version" >&2
     exit 1
