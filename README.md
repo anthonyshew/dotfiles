@@ -25,9 +25,8 @@ It's likely that this setup is macOS dependent in ways I don't realize.
 Add more packages by creating new directories and mirroring the target paths inside them.
 
 ## Usage
-1) Install GNU Stow (e.g., `brew install stow` on macOS).
-2) Clone this repo to `~/dotfiles` (or any path).
-3) From repo root, run `./bootstrap.sh` (defaults target to `$HOME`).
+1) Clone this repo to `~/dotfiles` (or any path).
+2) From repo root, run `./bootstrap.sh` (defaults target to `$HOME`).
 
 Common commands:
 - `stow zsh bash starship git ghostty nvim zed tmux lazygit bat` — link all packages.

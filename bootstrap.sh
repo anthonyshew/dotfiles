@@ -35,6 +35,21 @@ install_gh() {
   fi
 }
 
+install_stow() {
+  if ! command -v stow >/dev/null 2>&1; then
+    require_cmd brew
+    echo "Installing stow..."
+    brew install stow
+  fi
+}
+
+install_opencode() {
+  if ! command -v opencode >/dev/null 2>&1; then
+    echo "Installing opencode..."
+    curl -fsSL https://opencode.ai/install | bash
+  fi
+}
+
 install_rust() {
   if ! command -v rustc >/dev/null 2>&1; then
     echo "Installing rust..."
@@ -57,11 +72,12 @@ install_bun_globals() {
 
 main() {
   cd "$REPO_DIR"
-  require_cmd stow
 
+  install_stow
   install_rust
   install_eza
   install_gh
+  install_opencode
   install_bun_globals
 
   echo "Linking packages to $TARGET_DIR"
