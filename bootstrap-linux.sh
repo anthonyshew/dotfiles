@@ -49,23 +49,23 @@ detect_package_manager() {
 
 install_system_package() {
   case "$PACKAGE_MANAGER" in
-    apt)
-      if [ "$APT_UPDATED" -eq 0 ]; then
-        run_as_root apt-get update
-        APT_UPDATED=1
-      fi
-      run_as_root apt-get install -y "$@"
-      ;;
-    dnf)
-      run_as_root dnf install -y "$@"
-      ;;
-    pacman)
-      run_as_root pacman -Sy --needed --noconfirm "$@"
-      ;;
-    *)
-      echo "Unsupported package manager: $PACKAGE_MANAGER" >&2
-      exit 1
-      ;;
+  apt)
+    if [ "$APT_UPDATED" -eq 0 ]; then
+      run_as_root apt-get update
+      APT_UPDATED=1
+    fi
+    run_as_root apt-get install -y "$@"
+    ;;
+  dnf)
+    run_as_root dnf install -y "$@"
+    ;;
+  pacman)
+    run_as_root pacman -Sy --needed --noconfirm "$@"
+    ;;
+  *)
+    echo "Unsupported package manager: $PACKAGE_MANAGER" >&2
+    exit 1
+    ;;
   esac
 }
 
@@ -109,13 +109,13 @@ install_fzf_from_release() {
   install_command gzip gzip
 
   case "$(uname -m)" in
-    x86_64 | amd64) arch="amd64" ;;
-    arm64 | aarch64) arch="arm64" ;;
-    armv6l | armv7l) arch="armv7" ;;
-    *)
-      echo "Unsupported architecture for fzf: $(uname -m)" >&2
-      exit 1
-      ;;
+  x86_64 | amd64) arch="amd64" ;;
+  arm64 | aarch64) arch="arm64" ;;
+  armv6l | armv7l) arch="armv7" ;;
+  *)
+    echo "Unsupported architecture for fzf: $(uname -m)" >&2
+    exit 1
+    ;;
   esac
 
   version="$(curl -fsSIL -o /dev/null -w '%{url_effective}' https://github.com/junegunn/fzf/releases/latest | perl -ne 'print "$1" if m{/tag/v([^/]+)$}')"
@@ -179,41 +179,41 @@ install_fd() {
 
   echo "Installing fd..."
   case "$PACKAGE_MANAGER" in
-    apt)
-      if install_system_package fd-find; then
-        if ! has_cmd fd && has_cmd fdfind; then
-          mkdir -p "$HOME/.local/bin"
-          ln -sfn "$(command -v fdfind)" "$HOME/.local/bin/fd"
-          export PATH="$HOME/.local/bin:$PATH"
-        fi
-      else
-        echo "System package for fd unavailable; installing fd-find with cargo..."
-        ensure_cargo_path
-        require_cmd cargo
-        cargo install fd-find
-        export PATH="$HOME/.cargo/bin:$PATH"
+  apt)
+    if install_system_package fd-find; then
+      if ! has_cmd fd && has_cmd fdfind; then
+        mkdir -p "$HOME/.local/bin"
+        ln -sfn "$(command -v fdfind)" "$HOME/.local/bin/fd"
+        export PATH="$HOME/.local/bin:$PATH"
       fi
-      ;;
-    dnf)
-      if install_system_package fd-find; then
-        return
-      fi
+    else
       echo "System package for fd unavailable; installing fd-find with cargo..."
       ensure_cargo_path
       require_cmd cargo
       cargo install fd-find
       export PATH="$HOME/.cargo/bin:$PATH"
-      ;;
-    *)
-      if install_system_package fd; then
-        return
-      fi
-      echo "System package for fd unavailable; installing fd-find with cargo..."
-      ensure_cargo_path
-      require_cmd cargo
-      cargo install fd-find
-      export PATH="$HOME/.cargo/bin:$PATH"
-      ;;
+    fi
+    ;;
+  dnf)
+    if install_system_package fd-find; then
+      return
+    fi
+    echo "System package for fd unavailable; installing fd-find with cargo..."
+    ensure_cargo_path
+    require_cmd cargo
+    cargo install fd-find
+    export PATH="$HOME/.cargo/bin:$PATH"
+    ;;
+  *)
+    if install_system_package fd; then
+      return
+    fi
+    echo "System package for fd unavailable; installing fd-find with cargo..."
+    ensure_cargo_path
+    require_cmd cargo
+    cargo install fd-find
+    export PATH="$HOME/.cargo/bin:$PATH"
+    ;;
   esac
 
   require_cmd fd
@@ -259,12 +259,12 @@ install_nvim_from_release() {
   install_command gzip gzip
 
   case "$(uname -m)" in
-    x86_64 | amd64) arch="x86_64" ;;
-    arm64 | aarch64) arch="arm64" ;;
-    *)
-      echo "Unsupported architecture for Neovim: $(uname -m)" >&2
-      exit 1
-      ;;
+  x86_64 | amd64) arch="x86_64" ;;
+  arm64 | aarch64) arch="arm64" ;;
+  *)
+    echo "Unsupported architecture for Neovim: $(uname -m)" >&2
+    exit 1
+    ;;
   esac
 
   url="https://github.com/neovim/neovim/releases/latest/download/nvim-linux-${arch}.tar.gz"
@@ -311,13 +311,13 @@ install_gh_from_release() {
   install_command gzip gzip
 
   case "$(uname -m)" in
-    x86_64 | amd64) arch="amd64" ;;
-    arm64 | aarch64) arch="arm64" ;;
-    armv6l | armv7l) arch="armv6" ;;
-    *)
-      echo "Unsupported architecture for GitHub CLI: $(uname -m)" >&2
-      exit 1
-      ;;
+  x86_64 | amd64) arch="amd64" ;;
+  arm64 | aarch64) arch="arm64" ;;
+  armv6l | armv7l) arch="armv6" ;;
+  *)
+    echo "Unsupported architecture for GitHub CLI: $(uname -m)" >&2
+    exit 1
+    ;;
   esac
 
   version="$(curl -fsSIL -o /dev/null -w '%{url_effective}' https://github.com/cli/cli/releases/latest | perl -ne 'print "$1" if m{/tag/v([^/]+)$}')"
@@ -368,13 +368,13 @@ install_lazygit_from_release() {
   install_command gzip gzip
 
   case "$(uname -m)" in
-    x86_64 | amd64) arch="x86_64" ;;
-    arm64 | aarch64) arch="arm64" ;;
-    armv6l | armv7l) arch="armv6" ;;
-    *)
-      echo "Unsupported architecture for lazygit: $(uname -m)" >&2
-      exit 1
-      ;;
+  x86_64 | amd64) arch="x86_64" ;;
+  arm64 | aarch64) arch="arm64" ;;
+  armv6l | armv7l) arch="armv6" ;;
+  *)
+    echo "Unsupported architecture for lazygit: $(uname -m)" >&2
+    exit 1
+    ;;
   esac
 
   version="$(curl -fsSIL -o /dev/null -w '%{url_effective}' https://github.com/jesseduffield/lazygit/releases/latest | perl -ne 'print "$1" if m{/tag/v([^/]+)$}')"
@@ -413,29 +413,6 @@ install_lazygit() {
   require_cmd lazygit
 }
 
-install_opencode() {
-  if ! has_cmd opencode; then
-    echo "Installing opencode..."
-    curl -fsSL https://opencode.ai/install | bash
-  fi
-}
-
-install_opencode_config_dependencies() {
-  local config_dir="$REPO_DIR/opencode/.config/opencode"
-
-  if [ -f "$config_dir/package.json" ]; then
-    echo "Installing opencode config dependencies..."
-    (
-      cd "$config_dir"
-      if [ -f bun.lock ]; then
-        bun install --frozen-lockfile
-      else
-        bun install
-      fi
-    )
-  fi
-}
-
 install_bun_globals() {
   install_bun
   if has_cmd bun; then
@@ -446,6 +423,29 @@ install_bun_globals() {
   else
     echo "bun installation failed, skipping global package installation"
   fi
+
+  install_opencode() {
+    if ! has_cmd opencode; then
+      echo "Installing opencode..."
+      npm i -g opencode
+    fi
+  }
+
+  install_opencode_config_dependencies() {
+    local config_dir="$REPO_DIR/opencode/.config/opencode"
+
+    if [ -f "$config_dir/package.json" ]; then
+      echo "Installing opencode config dependencies..."
+      (
+        cd "$config_dir"
+        if [ -f bun.lock ]; then
+          bun install --frozen-lockfile
+        else
+          bun install
+        fi
+      )
+    fi
+  }
 }
 
 resolve_link_target() {
