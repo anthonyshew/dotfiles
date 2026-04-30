@@ -120,8 +120,65 @@ install_eza() {
   cargo install eza
 }
 
+install_gh_from_release() {
+  local arch
+  local url
+  local tmpdir
+  local gh_dir
+
+  install_curl
+  install_command tar tar
+  install_command gzip gzip
+
+  case "$(uname -m)" in
+    x86_64 | amd64) arch="amd64" ;;
+    arm64 | aarch64) arch="arm64" ;;
+    armv6l | armv7l) arch="armv6" ;;
+    *)
+      echo "Unsupported architecture for GitHub CLI: $(uname -m)" >&2
+      exit 1
+      ;;
+  esac
+
+  url="$(curl -fsSL https://api.github.com/repos/cli/cli/releases/latest | perl -ne 'print "$1\n" if /"browser_download_url": "([^"]*linux_'"$arch"'\.tar\.gz)"/' | head -n 1)"
+  if [ -z "$url" ]; then
+    echo "Could not find GitHub CLI Linux release for $arch" >&2
+    exit 1
+  fi
+
+  tmpdir="$(mktemp -d)"
+  (
+    trap 'rm -rf "$tmpdir"' EXIT
+    cd "$tmpdir"
+    curl -fsSL -o gh.tar.gz "$url"
+    tar -xzf gh.tar.gz
+    gh_dir="$(printf '%s\n' gh_*_linux_* | head -n 1)"
+    mkdir -p "$HOME/.local/bin" "$HOME/.local/share/man/man1"
+    cp "$gh_dir/bin/gh" "$HOME/.local/bin/gh"
+    cp "$gh_dir/share/man/man1/gh.1" "$HOME/.local/share/man/man1/gh.1"
+  )
+
+  export PATH="$HOME/.local/bin:$PATH"
+}
+
 install_gh() {
-  install_command gh gh
+  if has_cmd gh; then
+    return
+  fi
+
+  echo "Installing gh..."
+  if install_system_package gh; then
+    return
+  fi
+
+  if [ "$PLATFORM" = "linux" ]; then
+    echo "System package for gh unavailable; installing GitHub CLI from release..."
+    install_gh_from_release
+    require_cmd gh
+    return
+  fi
+
+  require_cmd gh
 }
 
 install_curl() {
