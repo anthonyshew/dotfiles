@@ -122,6 +122,7 @@ install_eza() {
 
 install_gh_from_release() {
   local arch
+  local version
   local url
   local tmpdir
   local gh_dir
@@ -140,11 +141,12 @@ install_gh_from_release() {
       ;;
   esac
 
-  url="$(curl -fsSL https://api.github.com/repos/cli/cli/releases/latest | perl -ne 'print "$1\n" if /"browser_download_url": "([^"]*linux_'"$arch"'\.tar\.gz)"/' | head -n 1)"
-  if [ -z "$url" ]; then
-    echo "Could not find GitHub CLI Linux release for $arch" >&2
+  version="$(curl -fsSL https://api.github.com/repos/cli/cli/releases/latest | perl -ne 'print "$1" if /"tag_name": "v([^"]+)"/')"
+  if [ -z "$version" ]; then
+    echo "Could not determine latest GitHub CLI version" >&2
     exit 1
   fi
+  url="https://github.com/cli/cli/releases/latest/download/gh_${version}_linux_${arch}.tar.gz"
 
   tmpdir="$(mktemp -d)"
   (
