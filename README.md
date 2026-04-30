@@ -1,6 +1,6 @@
 # Dotfiles
 
-This repo is organized into "packages" (directories) that mirror `$HOME`. `bootstrap.sh` links package contents into your home directory so the repo remains the source of truth.
+This repo is organized into "packages" (directories) that mirror `$HOME`. The bootstrap scripts link package contents into your home directory so the repo remains the source of truth.
 
 The shared config is intended to work on macOS and Linux. Platform-specific pieces live in `macos/` and `linux/`.
 
@@ -21,16 +21,18 @@ The shared config is intended to work on macOS and Linux. Platform-specific piec
 - `bat/` → `~/.config/bat/config`
 - `macos/` → macOS-only shell and Git config
 - `linux/` → Linux-only shell and Git config
-- `bootstrap.sh` → helper to stow all packages
+- `bootstrap-macos.sh` → install/link macOS packages
+- `bootstrap-linux.sh` → install/link Linux packages
 
 Add more packages by creating new directories and mirroring the target paths inside them.
 
 ## Usage
 1. Clone this repo to `~/dotfiles` (or any path).
-2. From repo root, run `./bootstrap.sh` (defaults target to `$HOME`).
+2. From repo root, run the bootstrap script for the current OS (defaults target to `$HOME`).
 
-`bootstrap.sh` detects macOS or Linux, installs missing core tools with Homebrew, apt, dnf, or pacman, links common packages plus the current platform package, then syncs LazyVim plugins headlessly.
+Each bootstrap script installs missing core tools, links common packages plus the matching platform package, then restores LazyVim plugins headlessly from the lockfile.
 
 Common commands:
-- `./bootstrap.sh` — link packages for the current platform.
-- `TARGET_DIR=/some/dir ./bootstrap.sh` — link into a different target.
+- `./bootstrap-macos.sh` — install and link packages on macOS.
+- `./bootstrap-linux.sh` — install and link packages on Linux.
+- `TARGET_DIR=/some/dir ./bootstrap-macos.sh` — link into a different target.

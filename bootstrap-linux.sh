@@ -3,8 +3,7 @@ set -euo pipefail
 
 REPO_DIR="${REPO_DIR:-$(pwd)}"
 TARGET_DIR="${TARGET_DIR:-$HOME}"
-COMMON_PACKAGES=(zsh starship git ghostty nvim zed tmux lazygit bat gh gh-dash opencode eza)
-PLATFORM=""
+PACKAGES=(zsh starship git ghostty nvim zed tmux lazygit bat gh gh-dash opencode eza linux)
 PACKAGE_MANAGER=""
 APT_UPDATED=0
 
@@ -19,6 +18,13 @@ require_cmd() {
   fi
 }
 
+require_linux() {
+  if [ "$(uname -s)" != "Linux" ]; then
+    echo "bootstrap-linux.sh only supports Linux" >&2
+    exit 1
+  fi
+}
+
 run_as_root() {
   if [ "${EUID:-$(id -u)}" -eq 0 ]; then
     "$@"
@@ -28,37 +34,21 @@ run_as_root() {
   fi
 }
 
-detect_platform() {
-  case "$(uname -s)" in
-    Darwin) PLATFORM="macos" ;;
-    Linux) PLATFORM="linux" ;;
-    *)
-      echo "Unsupported platform: $(uname -s)" >&2
-      exit 1
-      ;;
-  esac
-}
-
 detect_package_manager() {
-  if has_cmd brew; then
-    PACKAGE_MANAGER="brew"
-  elif has_cmd apt-get; then
+  if has_cmd apt-get; then
     PACKAGE_MANAGER="apt"
   elif has_cmd dnf; then
     PACKAGE_MANAGER="dnf"
   elif has_cmd pacman; then
     PACKAGE_MANAGER="pacman"
   else
-    echo "No supported package manager found. Install Homebrew, apt, dnf, or pacman." >&2
+    echo "No supported Linux package manager found. Install apt, dnf, or pacman." >&2
     exit 1
   fi
 }
 
 install_system_package() {
   case "$PACKAGE_MANAGER" in
-    brew)
-      brew install "$@"
-      ;;
     apt)
       if [ "$APT_UPDATED" -eq 0 ]; then
         run_as_root apt-get update
@@ -87,6 +77,25 @@ install_command() {
     echo "Installing $command_name..."
     install_system_package "$@"
   fi
+}
+
+install_curl() {
+  install_command curl curl
+}
+
+ensure_cargo_path() {
+  if ! has_cmd cargo && [ -f "$HOME/.cargo/env" ]; then
+    source "$HOME/.cargo/env"
+  fi
+}
+
+install_rust() {
+  if ! has_cmd rustc; then
+    echo "Installing rust..."
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+    source "$HOME/.cargo/env"
+  fi
+  ensure_cargo_path
 }
 
 install_fzf_from_release() {
@@ -140,13 +149,8 @@ install_fzf() {
     return
   fi
 
-  if [ "$PLATFORM" = "linux" ]; then
-    echo "System package for fzf unavailable; installing fzf from release..."
-    install_fzf_from_release
-    require_cmd fzf
-    return
-  fi
-
+  echo "System package for fzf unavailable; installing fzf from release..."
+  install_fzf_from_release
   require_cmd fzf
 }
 
@@ -224,12 +228,6 @@ install_bun() {
   fi
 }
 
-ensure_cargo_path() {
-  if ! has_cmd cargo && [ -f "$HOME/.cargo/env" ]; then
-    source "$HOME/.cargo/env"
-  fi
-}
-
 install_eza() {
   if has_cmd eza; then
     return
@@ -296,13 +294,8 @@ install_nvim() {
     return
   fi
 
-  if [ "$PLATFORM" = "linux" ]; then
-    echo "System package for nvim unavailable; installing Neovim from release..."
-    install_nvim_from_release
-    require_cmd nvim
-    return
-  fi
-
+  echo "System package for nvim unavailable; installing Neovim from release..."
+  install_nvim_from_release
   require_cmd nvim
 }
 
@@ -359,13 +352,8 @@ install_gh() {
     return
   fi
 
-  if [ "$PLATFORM" = "linux" ]; then
-    echo "System package for gh unavailable; installing GitHub CLI from release..."
-    install_gh_from_release
-    require_cmd gh
-    return
-  fi
-
+  echo "System package for gh unavailable; installing GitHub CLI from release..."
+  install_gh_from_release
   require_cmd gh
 }
 
@@ -420,18 +408,9 @@ install_lazygit() {
     return
   fi
 
-  if [ "$PLATFORM" = "linux" ]; then
-    echo "System package for lazygit unavailable; installing lazygit from release..."
-    install_lazygit_from_release
-    require_cmd lazygit
-    return
-  fi
-
+  echo "System package for lazygit unavailable; installing lazygit from release..."
+  install_lazygit_from_release
   require_cmd lazygit
-}
-
-install_curl() {
-  install_command curl curl
 }
 
 install_opencode() {
@@ -439,15 +418,6 @@ install_opencode() {
     echo "Installing opencode..."
     curl -fsSL https://opencode.ai/install | bash
   fi
-}
-
-install_rust() {
-  if ! has_cmd rustc; then
-    echo "Installing rust..."
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-    source "$HOME/.cargo/env"
-  fi
-  ensure_cargo_path
 }
 
 install_bun_globals() {
@@ -535,16 +505,16 @@ sync_lazyvim() {
   require_cmd nvim
   require_cmd git
 
-  echo "Installing LazyVim plugins..."
-  nvim --headless "+Lazy! sync" +qa
+  echo "Restoring LazyVim plugins..."
+  nvim --headless "+Lazy! restore" +qa
 }
 
 main() {
+  require_linux
+  detect_package_manager
+
   cd "$REPO_DIR"
   REPO_DIR="$(pwd)"
-
-  detect_platform
-  detect_package_manager
 
   install_curl
   install_git
@@ -561,13 +531,13 @@ main() {
   install_bun_globals
 
   echo "Linking packages to $TARGET_DIR"
-  for pkg in "${COMMON_PACKAGES[@]}" "$PLATFORM"; do
+  for pkg in "${PACKAGES[@]}"; do
     link_package "$pkg"
   done
 
   sync_lazyvim
 
-  echo "Done. Edit package list in bootstrap.sh as needed."
+  echo "Done. Edit package list in bootstrap-linux.sh as needed."
 }
 
 main "$@"
