@@ -98,8 +98,26 @@ install_bun() {
   fi
 }
 
+ensure_cargo_path() {
+  if ! has_cmd cargo && [ -f "$HOME/.cargo/env" ]; then
+    source "$HOME/.cargo/env"
+  fi
+}
+
 install_eza() {
-  install_command eza eza
+  if has_cmd eza; then
+    return
+  fi
+
+  echo "Installing eza..."
+  if install_system_package eza; then
+    return
+  fi
+
+  echo "System package for eza unavailable; installing eza with cargo..."
+  ensure_cargo_path
+  require_cmd cargo
+  cargo install eza
 }
 
 install_gh() {
@@ -162,6 +180,7 @@ install_rust() {
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
     source "$HOME/.cargo/env"
   fi
+  ensure_cargo_path
 }
 
 install_bun_globals() {
