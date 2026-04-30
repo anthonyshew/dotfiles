@@ -193,6 +193,9 @@ install_stow_from_source() {
 
   install_curl
   install_command perl perl
+  if [ "$PACKAGE_MANAGER" = "dnf" ]; then
+    install_system_package perl-File-Copy
+  fi
   install_command make make
   install_command tar tar
   install_command gzip gzip
