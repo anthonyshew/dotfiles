@@ -29,7 +29,7 @@ Add more packages by creating new directories and mirroring the target paths ins
 1. Clone this repo to `~/dotfiles` (or any path).
 2. From repo root, run `./bootstrap.sh` (defaults target to `$HOME`).
 
-`bootstrap.sh` detects macOS or Linux, installs missing core tools with Homebrew, apt, dnf, or pacman, then links common packages plus the current platform package.
+`bootstrap.sh` detects macOS or Linux, installs missing core tools with Homebrew, apt, dnf, or pacman, links common packages plus the current platform package, then syncs LazyVim plugins headlessly.
 
 Common commands:
 - `./bootstrap.sh` — link packages for the current platform.

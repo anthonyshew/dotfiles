@@ -120,6 +120,66 @@ install_eza() {
   cargo install eza
 }
 
+install_git() {
+  install_command git git
+}
+
+install_nvim_from_release() {
+  local arch
+  local url
+  local tmpdir
+  local nvim_dir
+
+  install_curl
+  install_command tar tar
+  install_command gzip gzip
+
+  case "$(uname -m)" in
+    x86_64 | amd64) arch="x86_64" ;;
+    arm64 | aarch64) arch="arm64" ;;
+    *)
+      echo "Unsupported architecture for Neovim: $(uname -m)" >&2
+      exit 1
+      ;;
+  esac
+
+  url="https://github.com/neovim/neovim/releases/latest/download/nvim-linux-${arch}.tar.gz"
+  tmpdir="$(mktemp -d)"
+  (
+    trap 'rm -rf "$tmpdir"' EXIT
+    cd "$tmpdir"
+    curl -fsSL -o nvim.tar.gz "$url"
+    tar -xzf nvim.tar.gz
+    nvim_dir="$(printf '%s\n' nvim-linux-* | head -n 1)"
+    rm -rf "$HOME/.local/nvim"
+    mkdir -p "$HOME/.local/bin"
+    cp -R "$nvim_dir" "$HOME/.local/nvim"
+    ln -sfn "$HOME/.local/nvim/bin/nvim" "$HOME/.local/bin/nvim"
+  )
+
+  export PATH="$HOME/.local/bin:$PATH"
+}
+
+install_nvim() {
+  if has_cmd nvim; then
+    return
+  fi
+
+  echo "Installing nvim..."
+  if install_system_package neovim; then
+    return
+  fi
+
+  if [ "$PLATFORM" = "linux" ]; then
+    echo "System package for nvim unavailable; installing Neovim from release..."
+    install_nvim_from_release
+    require_cmd nvim
+    return
+  fi
+
+  require_cmd nvim
+}
+
 install_gh_from_release() {
   local arch
   local version
@@ -284,6 +344,14 @@ link_package() {
   shopt -u dotglob nullglob
 }
 
+sync_lazyvim() {
+  require_cmd nvim
+  require_cmd git
+
+  echo "Installing LazyVim plugins..."
+  nvim --headless "+Lazy! sync" +qa
+}
+
 main() {
   cd "$REPO_DIR"
   REPO_DIR="$(pwd)"
@@ -292,7 +360,9 @@ main() {
   detect_package_manager
 
   install_curl
+  install_git
   install_rust
+  install_nvim
   install_eza
   install_gh
   install_opencode
@@ -302,6 +372,8 @@ main() {
   for pkg in "${COMMON_PACKAGES[@]}" "$PLATFORM"; do
     link_package "$pkg"
   done
+
+  sync_lazyvim
 
   echo "Done. Edit package list in bootstrap.sh as needed."
 }
