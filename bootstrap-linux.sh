@@ -423,29 +423,29 @@ install_bun_globals() {
   else
     echo "bun installation failed, skipping global package installation"
   fi
+}
 
-  install_opencode() {
-    if ! has_cmd opencode; then
-      echo "Installing opencode..."
-      npm i -g opencode
-    fi
-  }
+install_opencode() {
+  if ! has_cmd opencode; then
+    echo "Installing opencode..."
+    npm i -g opencode
+  fi
+}
 
-  install_opencode_config_dependencies() {
-    local config_dir="$REPO_DIR/opencode/.config/opencode"
+install_opencode_config_dependencies() {
+  local config_dir="$REPO_DIR/opencode/.config/opencode"
 
-    if [ -f "$config_dir/package.json" ]; then
-      echo "Installing opencode config dependencies..."
-      (
-        cd "$config_dir"
-        if [ -f bun.lock ]; then
-          bun install --frozen-lockfile
-        else
-          bun install
-        fi
-      )
-    fi
-  }
+  if [ -f "$config_dir/package.json" ]; then
+    echo "Installing opencode config dependencies..."
+    (
+      cd "$config_dir"
+      if [ -f bun.lock ]; then
+        bun install --frozen-lockfile
+      else
+        bun install
+      fi
+    )
+  fi
 }
 
 resolve_link_target() {
