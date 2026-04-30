@@ -7,7 +7,18 @@ export default tool({
     url: tool.schema.string().url().describe("The URL to open"),
   },
   async execute(args) {
-    await Bun.$`open ${args.url}`.quiet();
+    const command = process.platform === "darwin" ? "open" : "xdg-open";
+    const opener = Bun.which(command);
+
+    if (!opener) {
+      return `No URL opener found. Open manually: ${args.url}`;
+    }
+
+    await Bun.spawn([opener, args.url], {
+      stdout: "ignore",
+      stderr: "ignore",
+    }).exited;
+
     return `Opened ${args.url}`;
   },
 });

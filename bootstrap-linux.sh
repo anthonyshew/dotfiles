@@ -420,6 +420,22 @@ install_opencode() {
   fi
 }
 
+install_opencode_config_dependencies() {
+  local config_dir="$REPO_DIR/opencode/.config/opencode"
+
+  if [ -f "$config_dir/package.json" ]; then
+    echo "Installing opencode config dependencies..."
+    (
+      cd "$config_dir"
+      if [ -f bun.lock ]; then
+        bun install --frozen-lockfile
+      else
+        bun install
+      fi
+    )
+  fi
+}
+
 install_bun_globals() {
   install_bun
   if has_cmd bun; then
@@ -529,6 +545,7 @@ main() {
   install_gh
   install_opencode
   install_bun_globals
+  install_opencode_config_dependencies
 
   echo "Linking packages to $TARGET_DIR"
   for pkg in "${PACKAGES[@]}"; do

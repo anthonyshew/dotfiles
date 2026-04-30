@@ -16,7 +16,9 @@ export const ChimePlugin = async ({
         if (session.data?.parentID) {
           return;
         }
-        await $`afplay /System/Library/Sounds/Pop.aiff`;
+        if (process.platform === "darwin") {
+          await $`afplay /System/Library/Sounds/Pop.aiff`;
+        }
       }
     },
   };
