@@ -69,6 +69,7 @@ ${HOMEBREW_PREFIX:+$HOMEBREW_PREFIX/bin:}\
 ${HOMEBREW_PREFIX:+$HOMEBREW_PREFIX/sbin:}\
 /usr/local/bin:\
 $PATH"
+typeset -gU path PATH
 
 # Path to your oh-my-zsh installation.
 # export ZSH="$HOME/.oh-my-zsh"
@@ -99,7 +100,13 @@ fi
 
 
 # My aliases
-alias ls='eza --icons'
+ls() {
+  if (( $# == 0 )) || [[ "$*" == -* ]]; then
+    command eza --icons "$@" .
+  else
+    command eza --icons "$@"
+  fi
+}
 alias t='tmux'
 alias p='pnpm'
 alias n='nvim'
