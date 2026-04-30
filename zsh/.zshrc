@@ -36,21 +36,19 @@ precmd() {
 
 autoload -Uz add-zsh-hook
 
-# Homebrew
-export HOMEBREW_PREFIX="/opt/homebrew"
-export HOMEBREW_CELLAR="/opt/homebrew/Cellar"
-export HOMEBREW_REPOSITORY="/opt/homebrew"
-export MANPATH="/opt/homebrew/share/man:${MANPATH:-}"
-export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}"
-
-# pnpm
-export PNPM_HOME="$HOME/Library/pnpm"
-
 # Bun
 export BUN_INSTALL="$HOME/.bun"
 
-# OrbStack
-source ~/.orbstack/shell/init.zsh 2>/dev/null || :
+case "$(uname -s)" in
+  Darwin) _zsh_platform_config="$HOME/.config/zsh/macos.zsh" ;;
+  Linux) _zsh_platform_config="$HOME/.config/zsh/linux.zsh" ;;
+esac
+
+if [[ -n "${_zsh_platform_config:-}" && -r "$_zsh_platform_config" ]]; then
+  source "$_zsh_platform_config"
+fi
+
+: "${PNPM_HOME:=$HOME/.local/share/pnpm}"
 
 # Default editor
 export EDITOR="nvim"
@@ -67,8 +65,8 @@ $BUN_INSTALL/bin:\
 $PNPM_HOME:\
 $HOME/go/bin:\
 $HOME/bin:\
-/opt/homebrew/bin:\
-/opt/homebrew/sbin:\
+${HOMEBREW_PREFIX:+$HOMEBREW_PREFIX/bin:}\
+${HOMEBREW_PREFIX:+$HOMEBREW_PREFIX/sbin:}\
 /usr/local/bin:\
 $PATH"
 
@@ -82,18 +80,22 @@ export FNM_LOGLEVEL="quiet"
 # Regenerate cache: rm ~/.zsh_cache_*
 _zsh_fnm_cache="$HOME/.zsh_cache_fnm"
 _zsh_starship_cache="$HOME/.zsh_cache_starship"
-_fnm_bin="/opt/homebrew/bin/fnm"
-_starship_bin="/usr/local/bin/starship"
+_fnm_bin="$(command -v fnm 2>/dev/null || :)"
+_starship_bin="$(command -v starship 2>/dev/null || :)"
 
-if [[ ! -f "$_zsh_fnm_cache" || "$_fnm_bin" -nt "$_zsh_fnm_cache" ]]; then
-  fnm env --use-on-cd > "$_zsh_fnm_cache"
+if [[ -n "$_fnm_bin" ]]; then
+  if [[ ! -f "$_zsh_fnm_cache" || "$_fnm_bin" -nt "$_zsh_fnm_cache" ]]; then
+    fnm env --use-on-cd > "$_zsh_fnm_cache"
+  fi
+  source "$_zsh_fnm_cache"
 fi
-source "$_zsh_fnm_cache"
 
-if [[ ! -f "$_zsh_starship_cache" || "$_starship_bin" -nt "$_zsh_starship_cache" ]]; then
-  starship init zsh --print-full-init > "$_zsh_starship_cache"
+if [[ -n "$_starship_bin" ]]; then
+  if [[ ! -f "$_zsh_starship_cache" || "$_starship_bin" -nt "$_zsh_starship_cache" ]]; then
+    starship init zsh --print-full-init > "$_zsh_starship_cache"
+  fi
+  source "$_zsh_starship_cache"
 fi
-source "$_zsh_starship_cache"
 
 
 # My aliases
@@ -107,6 +109,16 @@ alias oc="OPENCODE_EXPERIMENTAL_MARKDOWN=true opencode"
 
 # Git
 alias gcm="git checkout main && git pull"
+random_suffix() {
+  if command -v sha256sum >/dev/null 2>&1; then
+    head -c 16 /dev/urandom | sha256sum | cut -c 1-5
+  elif command -v shasum >/dev/null 2>&1; then
+    head -c 16 /dev/urandom | shasum | cut -c 1-5
+  else
+    head -c 16 /dev/urandom | cksum | cut -c 1-5
+  fi
+}
+
 gwt() {
   echo -n "What are you building? "
   read desc
@@ -126,13 +138,32 @@ gdw() {
   git worktree remove $force "$wt" && cd "$main" && git branch -D "shew/$(basename $wt)"
 }
 alias gc="git commit -m"
-alias wip="source ~/.zshrc; git add -A && git commit -m 'WIP $(head -c 16 /dev/urandom | md5 | cut -c 1-5)' && git push"
-alias newbranch="source ~/.zshrc; git checkout -b shew/$(head -c 16 /dev/urandom | md5 | cut -c 1-5)"
-# Changed from alias to function - alias with $() runs git at shell startup!
+wip() {
+  source ~/.zshrc
+  git add -A && git commit -m "WIP $(random_suffix)" && git push
+}
+newbranch() {
+  source ~/.zshrc
+  git checkout -b "shew/$(random_suffix)"
+}
 cdgr() { cd "$(git rev-parse --show-toplevel)"; }
 
+if command -v pbcopy >/dev/null 2>&1; then
+  clipcopy() { pbcopy; }
+elif command -v wl-copy >/dev/null 2>&1; then
+  clipcopy() { wl-copy; }
+elif command -v xclip >/dev/null 2>&1; then
+  clipcopy() { xclip -selection clipboard; }
+else
+  clipcopy() {
+    cat >/dev/null
+    echo "No clipboard tool found" >&2
+    return 1
+  }
+fi
+
 # Copy pwd without a newline, so annoying
-cpwd() { printf '%s' "$PWD" | pbcopy; }
+cpwd() { printf '%s' "$PWD" | clipcopy; }
 
 # Projects
 alias projo="cd ~/projects/open"
@@ -150,7 +181,7 @@ tbp() {
   local dir="$PWD"
   while [[ "$dir" != "/" ]]; do
     if [[ -x "$dir/target/debug/turbo" ]]; then
-      echo -n "$dir/target/debug/turbo" | pbcopy
+      echo -n "$dir/target/debug/turbo" | clipcopy
       echo "Copied: $dir/target/debug/turbo"
       return
     fi
@@ -163,7 +194,7 @@ tbpr() {
   local dir="$PWD"
   while [[ "$dir" != "/" ]]; do
     if [[ -x "$dir/target/release/turbo" ]]; then
-      echo -n "$dir/target/release/turbo" | pbcopy
+      echo -n "$dir/target/release/turbo" | clipcopy
       echo "Copied: $dir/target/release/turbo"
       return
     fi
@@ -205,14 +236,6 @@ if [[ -s "$HOME/.bun/_bun" ]]; then
   }
   compdef __load_bun_completions bun
 fi
-
-# ENVIRONMENT VARIABLES
-# DO NOT WRITE ENVIRONMENT VARIABLES HERE DIRECTLY
-# USE THE `security` FUNCTIONALITY FROM MACOS
-export AI_GATEWAY_API_KEY=$(security find-generic-password -a "anthonyshew" -s "AI_GATEWAY_API_KEY" -w)
-
-# bun completions
-[ -s "/private/var/folders/0r/90dc16493lx7gw025k4z8sw40000gn/T/lockfile-validate-ixynZs/.bun-install/_bun" ] && source "/private/var/folders/0r/90dc16493lx7gw025k4z8sw40000gn/T/lockfile-validate-ixynZs/.bun-install/_bun"
 
 # Register title hook last so it runs after Ghostty's shell-integration hooks.
 add-zsh-hook chpwd __ghostty_update_title
