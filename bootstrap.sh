@@ -89,6 +89,40 @@ install_command() {
   fi
 }
 
+install_fzf() {
+  install_command fzf fzf
+}
+
+install_rg() {
+  install_command rg ripgrep
+}
+
+install_fd() {
+  if has_cmd fd; then
+    return
+  fi
+
+  echo "Installing fd..."
+  case "$PACKAGE_MANAGER" in
+    apt)
+      install_system_package fd-find
+      if ! has_cmd fd && has_cmd fdfind; then
+        mkdir -p "$HOME/.local/bin"
+        ln -sfn "$(command -v fdfind)" "$HOME/.local/bin/fd"
+        export PATH="$HOME/.local/bin:$PATH"
+      fi
+      ;;
+    dnf)
+      install_system_package fd-find
+      ;;
+    *)
+      install_system_package fd
+      ;;
+  esac
+
+  require_cmd fd
+}
+
 install_bun() {
   if ! has_cmd bun; then
     echo "Installing bun..."
@@ -243,6 +277,67 @@ install_gh() {
   require_cmd gh
 }
 
+install_lazygit_from_release() {
+  local arch
+  local version
+  local url
+  local tmpdir
+
+  install_curl
+  install_command tar tar
+  install_command gzip gzip
+
+  case "$(uname -m)" in
+    x86_64 | amd64) arch="x86_64" ;;
+    arm64 | aarch64) arch="arm64" ;;
+    armv6l | armv7l) arch="armv6" ;;
+    *)
+      echo "Unsupported architecture for lazygit: $(uname -m)" >&2
+      exit 1
+      ;;
+  esac
+
+  version="$(curl -fsSIL -o /dev/null -w '%{url_effective}' https://github.com/jesseduffield/lazygit/releases/latest | perl -ne 'print "$1" if m{/tag/v([^/]+)$}')"
+  if [ -z "$version" ]; then
+    echo "Could not determine latest lazygit version" >&2
+    exit 1
+  fi
+
+  url="https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${version}_Linux_${arch}.tar.gz"
+  tmpdir="$(mktemp -d)"
+  (
+    trap 'rm -rf "$tmpdir"' EXIT
+    cd "$tmpdir"
+    curl -fsSL -o lazygit.tar.gz "$url"
+    tar -xzf lazygit.tar.gz lazygit
+    mkdir -p "$HOME/.local/bin"
+    cp lazygit "$HOME/.local/bin/lazygit"
+    chmod +x "$HOME/.local/bin/lazygit"
+  )
+
+  export PATH="$HOME/.local/bin:$PATH"
+}
+
+install_lazygit() {
+  if has_cmd lazygit; then
+    return
+  fi
+
+  echo "Installing lazygit..."
+  if install_system_package lazygit; then
+    return
+  fi
+
+  if [ "$PLATFORM" = "linux" ]; then
+    echo "System package for lazygit unavailable; installing lazygit from release..."
+    install_lazygit_from_release
+    require_cmd lazygit
+    return
+  fi
+
+  require_cmd lazygit
+}
+
 install_curl() {
   install_command curl curl
 }
@@ -363,6 +458,11 @@ main() {
   install_git
   install_rust
   install_nvim
+  install_command unzip unzip
+  install_fzf
+  install_rg
+  install_fd
+  install_lazygit
   install_eza
   install_gh
   install_opencode
