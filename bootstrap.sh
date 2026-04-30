@@ -28,6 +28,13 @@ install_eza() {
   fi
 }
 
+install_gh() {
+  if ! command -v gh >/dev/null 2>&1; then
+    echo "Installing gh..."
+    brew install gh
+  fi
+}
+
 install_rust() {
   if ! command -v rustc >/dev/null 2>&1; then
     echo "Installing rust..."
@@ -54,6 +61,7 @@ main() {
 
   install_rust
   install_eza
+  install_gh
   install_bun_globals
 
   echo "Linking packages to $TARGET_DIR"
