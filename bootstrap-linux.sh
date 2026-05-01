@@ -428,7 +428,7 @@ install_bun_globals() {
 install_opencode() {
   if ! has_cmd opencode; then
     echo "Installing opencode..."
-    npm i -g opencode
+    npm i -g opencode-ai
   fi
 }
 
