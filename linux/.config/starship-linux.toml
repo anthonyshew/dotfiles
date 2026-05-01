@@ -1,0 +1,25 @@
+# Default
+format = '''
+▲ ☁️ $directory$git_branch$character
+'''
+
+# For recordings
+# format = '''
+# ▲ ☁️ $directory$character
+# '''
+
+[cmd_duration]
+disabled = true
+
+[character]
+format = ''
+
+[docker_context]
+disabled = true
+
+[git_branch]
+symbol = ''
+style = 'red'
+
+[git_status]
+disabled = true
