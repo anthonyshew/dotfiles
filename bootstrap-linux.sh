@@ -83,6 +83,22 @@ install_curl() {
   install_command curl curl
 }
 
+install_zsh() {
+  install_command zsh zsh
+}
+
+install_starship() {
+  if has_cmd starship; then
+    return
+  fi
+
+  echo "Installing starship..."
+  mkdir -p "$HOME/.local/bin"
+  curl -fsSL https://starship.rs/install.sh | sh -s -- -y -b "$HOME/.local/bin"
+  export PATH="$HOME/.local/bin:$PATH"
+  require_cmd starship
+}
+
 ensure_cargo_path() {
   if ! has_cmd cargo && [ -f "$HOME/.cargo/env" ]; then
     source "$HOME/.cargo/env"
@@ -534,7 +550,9 @@ main() {
 
   install_curl
   install_git
+  install_zsh
   install_rust
+  install_starship
   install_nvim
   install_command unzip unzip
   install_fzf

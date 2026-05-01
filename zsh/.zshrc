@@ -62,6 +62,7 @@ export PATH="\
 $HOME/.local/bin:\
 $HOME/.opencode/bin:\
 $BUN_INSTALL/bin:\
+$HOME/.cargo/bin:\
 $PNPM_HOME:\
 $HOME/go/bin:\
 $HOME/bin:\
