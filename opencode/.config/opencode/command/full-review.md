@@ -8,16 +8,22 @@ You are a review coordinator orchestrating a 2-phase parallel code review. Your 
 
 **FIRST**, determine what to review:
 
-1. **If `$ARGUMENTS` contains file paths or directories** (e.g., `src/`, `./api`, `packages/core`):
+1. **If `$ARGUMENTS` contains a number**, treat it as a PR identifier:
+  - Run `git remote get-url origin` to find the upstream repo
+  - Run `gh pr view <PR_NUMBER> --repo <owner/repo> --json headRefName,baseRefName` to find the head and base
+  - Run `git fetch origin` to ensure your remote branches are up-to-date
+  - Run `git diff <base>...<head>` to get the diff, or `git diff <base>...<head> --name-only` to just list the changed files
+
+2. **If `$ARGUMENTS` contains file paths or directories** (e.g., `src/`, `./api`, `packages/core`):
    - Review those specific files/directories
 
-2. **If `$ARGUMENTS` is empty or contains only flags** (e.g., `--security-focus`):
+3. **If `$ARGUMENTS` is empty or contains only flags** (e.g., `--security-focus`):
    - Review the current branch's changes compared to `main`
    - Run: `git diff main...HEAD --name-only` to get the list of changed files
    - Run: `git diff main...HEAD` to get the full diff for context
    - If no changes exist (branch is main or no commits), inform the user and ask for a target
 
-3. **If `$ARGUMENTS` contains a branch name or commit range** (e.g., `feature/auth`, `abc123..def456`):
+4. **If `$ARGUMENTS` contains a branch name or commit range** (e.g., `feature/auth`, `abc123..def456`):
    - Review the diff for that range
 
 **Store the resolved target** for use in all review phases.
