@@ -248,3 +248,6 @@ fi
 # Register title hook last so it runs after Ghostty's shell-integration hooks.
 add-zsh-hook chpwd __ghostty_update_title
 add-zsh-hook precmd __ghostty_update_title
+
+# bun completions
+[ -s "/private/var/folders/0r/90dc16493lx7gw025k4z8sw40000gn/T/lockfile-pmenv-AT1wsJ/bun-install/_bun" ] && source "/private/var/folders/0r/90dc16493lx7gw025k4z8sw40000gn/T/lockfile-pmenv-AT1wsJ/bun-install/_bun"
